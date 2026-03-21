@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 export default function Header() {
@@ -41,19 +40,18 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="flex items-center justify-between px-4 pt-4 pb-2">
-      <div>
-        <Image
-          src="/images/logo.png"
-          alt="TimTour"
-          width={120}
-          height={36}
-          className="mb-2 h-9 w-auto"
-        />
-        <p className="text-sm text-gray-500">
+    <header className="flex items-center justify-between bg-[#FAFAF8] px-4 pt-4 pb-3">
+      <img
+        src="/images/logo.png"
+        alt="TimTour"
+        className="h-10 w-10 rounded-xl object-contain"
+      />
+
+      <div className="flex flex-col items-center">
+        <p className="text-base font-black text-gray-900">
           Привет{userName ? `, ${userName}` : ''}! 👋
         </p>
-        <p className="text-xl font-black text-gray-900">Куда летим?</p>
+        <p className="text-xs font-medium text-gray-400">Куда летим?</p>
       </div>
 
       {photoUrl ? (
