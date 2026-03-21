@@ -52,7 +52,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const toursPromise = getTours()
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] pb-24">
+    <main className="page-transition min-h-screen bg-[#FAFAF8] pb-24">
       <Suspense
         fallback={
           <div className="px-4 space-y-4 pt-6">

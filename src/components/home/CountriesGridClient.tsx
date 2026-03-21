@@ -48,7 +48,7 @@ export default function CountriesGridClient({ countries }: CountriesGridClientPr
                 key={country.id}
                 href={`/catalog?country=${country.id}`}
                 prefetch={true}
-                className="relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
+                className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
               >
                 <div className="relative h-full w-full">
                   {country.cover_url ? (

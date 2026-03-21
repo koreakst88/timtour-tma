@@ -56,7 +56,7 @@ async function PopularToursSection() {
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
-      <main className="mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-32 pt-6">
+      <main className="page-transition mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-32 pt-6">
         <Header />
 
         <section className="mt-5 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#FF6B35] to-[#F4A261] p-5 text-white shadow-[0_22px_45px_rgba(255,107,53,0.28)]">

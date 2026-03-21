@@ -34,7 +34,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
     <Link
       href={`/tour/${tour.id}`}
       prefetch={true}
-      className="relative mb-4 block w-full cursor-pointer overflow-hidden rounded-[20px] bg-white text-left shadow-[0_18px_36px_rgba(26,20,17,0.08)] transition active:scale-[0.99]"
+      className="tap-effect relative mb-4 block w-full cursor-pointer overflow-hidden rounded-[20px] bg-white text-left shadow-[0_18px_36px_rgba(26,20,17,0.08)] transition active:scale-[0.99]"
     >
       <div className="relative h-[200px] overflow-hidden">
         {images.length > 0 ? (

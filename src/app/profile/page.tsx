@@ -112,7 +112,7 @@ export default function ProfilePage() {
   }, [user?.first_name, user?.last_name])
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] pb-24 text-[#1F1F1B]">
+    <main className="page-transition min-h-screen bg-[#FAFAF8] pb-24 text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md px-4 pt-6">
         <section className="rounded-[24px] bg-white p-6 text-center shadow-[0_16px_32px_rgba(28,23,18,0.08)]">
           <div className="mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[#FFE7DD] text-2xl font-bold text-[#FF6B35]">

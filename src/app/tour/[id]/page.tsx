@@ -75,23 +75,25 @@ export default async function TourPage({ params }: TourPageProps) {
   const typeLabel = fullTour.type === 'group' ? 'Групповой' : 'Индивидуальный'
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
+    <main className="page-transition min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md">
-        <section className="relative">
-          <TourGallery images={photos} title={fullTour.title} />
+        <div className="fade-in">
+          <section className="relative">
+            <TourGallery images={photos} title={fullTour.title} />
 
-          <TourBackButton />
+            <TourBackButton />
 
-          <div className="absolute right-4 top-4 z-10">
-            <FavoriteButton tourId={fullTour.id} />
-          </div>
+            <div className="absolute right-4 top-4 z-10">
+              <FavoriteButton tourId={fullTour.id} />
+            </div>
 
-          <div className="absolute bottom-4 left-4 z-10 inline-flex rounded-full bg-white/90 px-3 py-2 text-xs font-bold text-[#FF6B35] backdrop-blur-sm">
-            {typeLabel}
-          </div>
-        </section>
+            <div className="absolute bottom-4 left-4 z-10 inline-flex rounded-full bg-white/90 px-3 py-2 text-xs font-bold text-[#FF6B35] backdrop-blur-sm">
+              {typeLabel}
+            </div>
+          </section>
+        </div>
 
-        <div className="space-y-7 px-4 pt-5">
+        <div className="fade-in px-4 pt-5" style={{ animationDelay: '0.05s' }}>
           <section>
             <h1 className="text-[30px] font-extrabold leading-tight tracking-[-0.03em]">
               {fullTour.title}
@@ -105,14 +107,18 @@ export default async function TourPage({ params }: TourPageProps) {
             </p>
             <p className="mt-4 text-[28px] font-extrabold text-[#FF6B35]">{fullTour.price}</p>
           </section>
+        </div>
 
+        <div className="fade-in px-4 pt-7" style={{ animationDelay: '0.1s' }}>
           <section className="rounded-[24px] bg-white p-5 shadow-[0_14px_30px_rgba(32,26,23,0.06)]">
             <h2 className="text-lg font-extrabold">О туре</h2>
             <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-[#4F4E49]">
               {fullTour.description}
             </p>
           </section>
+        </div>
 
+        <div className="fade-in space-y-7 px-4 pt-7" style={{ animationDelay: '0.15s' }}>
           {fullTour.type === 'group' ? (
             <>
               <TourAccordion durationDays={fullTour.duration_days} />
@@ -169,7 +175,7 @@ export default async function TourPage({ params }: TourPageProps) {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-md px-4 py-6 mt-4">
+      <div className="mx-auto mt-4 w-full max-w-md px-4 py-6">
         <Link href={`/booking/${fullTour.id}`}>
           <button className="h-14 w-full rounded-2xl bg-[#FF6B35] text-lg font-bold text-white transition-transform active:scale-95">
             Забронировать тур

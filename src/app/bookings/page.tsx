@@ -57,7 +57,7 @@ export default function BookingsPage() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] pb-24 text-[#1F1F1B]">
+    <main className="page-transition min-h-screen bg-[#FAFAF8] pb-24 text-[#1F1F1B]">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4 pt-6">
         <header>
           <h1 className="text-[30px] font-extrabold tracking-[-0.03em]">Мои заявки</h1>
