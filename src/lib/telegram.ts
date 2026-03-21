@@ -1,14 +1,35 @@
 import { TelegramUser } from '@/types'
 
-let WebApp: any = null
-
-const getWebApp = async () => {
-  if (typeof window === 'undefined') return null
-  if (!WebApp) {
-    const module = await import('@twa-dev/sdk')
-    WebApp = module.default
+type TelegramWebApp = {
+  ready: () => void
+  expand: () => void
+  initDataUnsafe?: {
+    user?: TelegramUser
   }
-  return WebApp
+  openLink: (url: string) => void
+}
+
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: TelegramWebApp
+    }
+  }
+}
+
+let cachedWebApp: TelegramWebApp | null = null
+
+const getWebApp = async (): Promise<TelegramWebApp | null> => {
+  if (typeof window === 'undefined') return null
+  if (window.Telegram?.WebApp) {
+    cachedWebApp = window.Telegram.WebApp
+    return cachedWebApp
+  }
+  if (!cachedWebApp) {
+    const sdk = await import('@twa-dev/sdk')
+    cachedWebApp = sdk.default as TelegramWebApp
+  }
+  return cachedWebApp
 }
 
 export const initTelegram = async () => {
@@ -20,12 +41,7 @@ export const initTelegram = async () => {
 
 export const getTelegramUser = (): TelegramUser | null => {
   if (typeof window === 'undefined') return null
-  try {
-    const app = require('@twa-dev/sdk').default
-    return app.initDataUnsafe?.user ?? null
-  } catch {
-    return null
-  }
+  return window.Telegram?.WebApp?.initDataUnsafe?.user ?? cachedWebApp?.initDataUnsafe?.user ?? null
 }
 
 export const isAdmin = (): boolean => {
@@ -37,10 +53,10 @@ export const isAdmin = (): boolean => {
 
 export const openLink = (url: string) => {
   if (typeof window === 'undefined') return
-  try {
-    const app = require('@twa-dev/sdk').default
+  const app = window.Telegram?.WebApp ?? cachedWebApp
+  if (app) {
     app.openLink(url)
-  } catch {
+  } else {
     window.open(url, '_blank')
   }
 }
