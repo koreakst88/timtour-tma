@@ -68,24 +68,22 @@ export default function HomeScreen({ countries }: HomeScreenProps) {
                 <Link
                   key={country.id}
                   href={`/catalog?country=${country.id}`}
-                  className="group relative block overflow-hidden rounded-[20px] bg-white shadow-[0_16px_34px_rgba(26,20,17,0.08)] transition-transform duration-200 active:scale-[0.98]"
+                  className="relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
                 >
-                  <div className="relative aspect-[0.88] w-full">
+                  <div className="relative h-full w-full">
                     {country.cover_url ? (
-                      <div
-                        className="h-full w-full bg-cover bg-center transition duration-300 group-hover:scale-[1.03]"
-                        style={{ backgroundImage: `url(${country.cover_url})` }}
-                        aria-label={country.name}
+                      <img
+                        src={country.cover_url}
+                        alt={country.name}
+                        className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="h-full w-full bg-gradient-to-br from-[#FF6B35] via-[#FF8A5B] to-[#F4A261]" />
+                      <div className="h-full w-full bg-gradient-to-br from-[#FF6B35] to-[#F4A261]" />
                     )}
-                    <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 flex items-end p-4">
-                      <p className="text-base font-bold text-white">
-                        {country.flag_emoji ? `${country.flag_emoji} ` : ''}
-                        {country.name}
-                      </p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    <div className="absolute bottom-3 left-3 text-sm font-bold text-white">
+                      {country.flag_emoji ? `${country.flag_emoji} ` : ''}
+                      {country.name}
                     </div>
                   </div>
                 </Link>

@@ -1,3 +1,3 @@
-export default function Page() {
-  return <div>Страница в разработке</div>
-}
+export { default } from '@/app/catalog/page'
+
+export const dynamic = 'force-dynamic'
