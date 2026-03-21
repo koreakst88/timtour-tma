@@ -7,6 +7,10 @@ import { ADMIN_TG_COOKIE } from "@/lib/admin-constants";
 
 export default function AppInit() {
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.history.scrollRestoration = 'manual'
+    }
+
     const init = async () => {
       if (typeof window === 'undefined') return;
 

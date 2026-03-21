@@ -41,11 +41,11 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between bg-[#FAFAF8] px-4 pt-4 pb-3">
-      <div className="flex w-24 shrink-0 items-center justify-start">
+      <div className="flex w-16 shrink-0 items-center justify-start">
         <img
-          src="/images/referencelogo.jpg"
+          src="/images/logo-cropped.jpg"
           alt="TimTour"
-          className="h-12 w-24 object-contain"
+          className="h-14 w-14 rounded-full bg-white object-cover shadow-[0_8px_20px_rgba(0,0,0,0.08)] ring-1 ring-[#EAD9B4]"
         />
       </div>
 

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import FavoriteButton from '@/components/tours/FavoriteButton'
 import TourAccordion from '@/components/tours/TourAccordion'
+import TourBackButton from '@/components/tours/TourBackButton'
 import TourDates from '@/components/tours/TourDates'
 import TourGallery from '@/components/tours/TourGallery'
 import { supabase } from '@/lib/supabase'
@@ -79,13 +80,7 @@ export default async function TourPage({ params }: TourPageProps) {
         <section className="relative">
           <TourGallery images={photos} title={fullTour.title} />
 
-          <Link
-            href="/catalog"
-            className="absolute left-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1F1F1B] shadow-[0_12px_24px_rgba(28,23,18,0.12)]"
-            aria-label="Назад"
-          >
-            ←
-          </Link>
+          <TourBackButton />
 
           <div className="absolute right-4 top-4 z-10">
             <FavoriteButton tourId={fullTour.id} />
