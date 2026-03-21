@@ -23,6 +23,11 @@
 # misc
 .DS_Store
 *.pem
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
 
 # debug
 npm-debug.log*
