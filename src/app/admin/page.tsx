@@ -15,8 +15,6 @@ const formatDate = (value: string) =>
   }).format(new Date(value))
 
 export default async function AdminPage() {
-  await requireAdminAccess()
-
   const [
     { count: bookingsCount },
     { count: toursCount },

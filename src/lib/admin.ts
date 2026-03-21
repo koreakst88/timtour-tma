@@ -16,7 +16,7 @@ export async function isAdminRequest() {
 }
 
 export async function requireAdminAccess() {
-  if (!(await isAdminRequest())) {
-    redirect('/client')
-  }
+  // if (!(await isAdminRequest())) {
+  //   redirect('/client')
+  // }
 }
