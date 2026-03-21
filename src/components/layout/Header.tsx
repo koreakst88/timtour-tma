@@ -2,53 +2,71 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import type { TelegramUser } from '@/types'
 
 export default function Header() {
-  const [user, setUser] = useState<TelegramUser | null>(null)
-  const [userName, setUserName] = useState('')
+  const [userName, setUserName] = useState<string>('')
+  const [photoUrl, setPhotoUrl] = useState<string>('')
 
   useEffect(() => {
-    const tg = window?.Telegram?.WebApp
-    const tgUser = tg?.initDataUnsafe?.user
-    if (tgUser) {
-      setUser(tgUser)
-      if (tgUser.first_name) {
-        setUserName(tgUser.first_name)
+    let retryTimer: number | undefined
+
+    const getTgUser = () => {
+      const tg = window?.Telegram?.WebApp
+      const user = tg?.initDataUnsafe?.user
+
+      if (user?.first_name) {
+        setUserName(user.first_name)
+        if (user.photo_url) {
+          setPhotoUrl(user.photo_url)
+        }
+        return true
+      }
+
+      return false
+    }
+
+    if (!getTgUser()) {
+      retryTimer = window.setTimeout(() => {
+        if (!getTgUser()) {
+          retryTimer = window.setTimeout(getTgUser, 1000)
+        }
+      }, 300)
+    }
+
+    return () => {
+      if (retryTimer) {
+        clearTimeout(retryTimer)
       }
     }
   }, [])
 
   return (
-    <header className="flex items-start justify-between gap-4">
-      <div className="min-w-0">
+    <header className="flex items-center justify-between px-4 pt-4 pb-2">
+      <div>
         <Image
-          src="/images/referencelogo.jpg"
+          src="/images/logo.png"
           alt="TimTour"
-          width={72}
-          height={72}
-          className="h-[72px] w-[72px] rounded-full object-cover"
+          width={120}
+          height={36}
+          className="mb-2 h-9 w-auto"
         />
-        <p className="mt-4 text-[22px] font-extrabold tracking-[-0.02em] text-[#1F1F1B]">
+        <p className="text-sm text-gray-500">
           Привет{userName ? `, ${userName}` : ''}! 👋
         </p>
-        <p className="mt-1 text-[15px] font-medium text-[#7D7C74]">Куда летим?</p>
+        <p className="text-xl font-black text-gray-900">Куда летим?</p>
       </div>
 
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_10px_24px_rgba(26,20,17,0.08)]">
-        {user?.photo_url ? (
-          <div
-            className="h-full w-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${user.photo_url})` }}
-            role="img"
-            aria-label={user.first_name ?? 'Пользователь'}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-[#FFE7DD] text-sm font-bold text-[#FF6B35]">
-            {user?.first_name?.slice(0, 1) ?? 'TT'}
-          </div>
-        )}
-      </div>
+      {photoUrl ? (
+        <img
+          src={photoUrl}
+          alt="avatar"
+          className="h-10 w-10 rounded-full object-cover"
+        />
+      ) : (
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF6B35]/20 font-bold text-[#FF6B35]">
+          {userName ? userName[0].toUpperCase() : '👤'}
+        </div>
+      )}
     </header>
   )
 }
