@@ -1,30 +1,46 @@
-import WebApp from '@twa-dev/sdk'
+import { TelegramUser } from '@/types'
 
-// Инициализация TMA
-export const initTelegram = () => {
-  WebApp.ready()
-  WebApp.expand()
+let WebApp: any = null
+
+const getWebApp = async () => {
+  if (typeof window === 'undefined') return null
+  if (!WebApp) {
+    const module = await import('@twa-dev/sdk')
+    WebApp = module.default
+  }
+  return WebApp
 }
 
-// Получить данные пользователя из Telegram
-export const getTelegramUser = () => {
-  return WebApp.initDataUnsafe?.user ?? null
+export const initTelegram = async () => {
+  const app = await getWebApp()
+  if (!app) return
+  app.ready()
+  app.expand()
 }
 
-// Проверить является ли пользователь менеджером
-export const isAdmin = () => {
+export const getTelegramUser = (): TelegramUser | null => {
+  if (typeof window === 'undefined') return null
+  try {
+    const app = require('@twa-dev/sdk').default
+    return app.initDataUnsafe?.user ?? null
+  } catch {
+    return null
+  }
+}
+
+export const isAdmin = (): boolean => {
   const adminId = process.env.NEXT_PUBLIC_ADMIN_TG_ID
   const user = getTelegramUser()
   if (!user || !adminId) return false
   return String(user.id) === adminId
 }
 
-// Закрыть TMA
-export const closeTMA = () => {
-  WebApp.close()
-}
-
-// Открыть внешнюю ссылку
 export const openLink = (url: string) => {
-  WebApp.openLink(url)
+  if (typeof window === 'undefined') return
+  try {
+    const app = require('@twa-dev/sdk').default
+    app.openLink(url)
+  } catch {
+    window.open(url, '_blank')
+  }
 }
