@@ -1,14 +1,13 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useEffectEvent, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Clock3 } from 'lucide-react'
 import FavoriteButton from '@/components/tours/FavoriteButton'
 import type { Tour } from '@/types'
 
 export default function TourCard({ tour }: { tour: Tour }) {
-  const router = useRouter()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   const images = [...(tour.media ?? [])]
@@ -32,8 +31,9 @@ export default function TourCard({ tour }: { tour: Tour }) {
   const typeLabel = tour.type === 'group' ? 'Групповой' : 'Индивидуальный'
 
   return (
-    <div
-      onClick={() => router.push(`/tour/${tour.id}`)}
+    <Link
+      href={`/tour/${tour.id}`}
+      prefetch={true}
       className="relative mb-4 block w-full cursor-pointer overflow-hidden rounded-[20px] bg-white text-left shadow-[0_18px_36px_rgba(26,20,17,0.08)] transition active:scale-[0.99]"
     >
       <div className="relative h-[200px] overflow-hidden">
@@ -88,6 +88,6 @@ export default function TourCard({ tour }: { tour: Tour }) {
           <div className="text-right text-lg font-extrabold text-[#FF6B35]">{tour.price}</div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
