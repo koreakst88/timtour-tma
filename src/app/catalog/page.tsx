@@ -1,5 +1,4 @@
 import CatalogClient from '@/components/catalog/CatalogClient'
-import { Tabbar } from '@/components/layout/Tabbar'
 import { supabase } from '@/lib/supabase'
 import type { Country, Tour } from '@/types'
 
@@ -51,7 +50,6 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
         tours={(tours ?? []) as Tour[]}
         initialCountry={resolvedSearchParams.country}
       />
-      <Tabbar active="catalog" />
     </main>
   )
 }

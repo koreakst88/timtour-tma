@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useDeferredValue, useState } from 'react'
 import { Search } from 'lucide-react'
 import Header from '@/components/layout/Header'
-import Tabbar from '@/components/layout/Tabbar'
 import type { Country } from '@/types'
 
 type HomeScreenProps = {
@@ -104,7 +103,6 @@ export default function HomeScreen({ countries }: HomeScreenProps) {
         </Link>
       </main>
 
-      <Tabbar />
     </div>
   )
 }

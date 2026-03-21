@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useMemo } from 'react'
-import { Tabbar } from '@/components/layout/Tabbar'
 import { getTelegramUser } from '@/lib/telegram'
 
 function InstagramIcon() {
@@ -170,8 +169,6 @@ export default function ProfilePage() {
           </div>
         </section>
       </div>
-
-      <Tabbar active="profile" />
     </main>
   )
 }

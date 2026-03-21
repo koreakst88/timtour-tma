@@ -1,5 +1,3 @@
-import BottomNav from "@/components/layout/BottomNav";
-
 export default function ClientLayout({
   children,
 }: Readonly<{
@@ -10,7 +8,6 @@ export default function ClientLayout({
       <main className="flex-1 pb-[100px] overflow-y-auto no-scrollbar scroll-smooth">
         {children}
       </main>
-      <BottomNav />
     </div>
   );
 }

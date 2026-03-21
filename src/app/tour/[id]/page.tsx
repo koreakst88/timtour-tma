@@ -4,7 +4,6 @@ import FavoriteButton from '@/components/tours/FavoriteButton'
 import TourAccordion from '@/components/tours/TourAccordion'
 import TourDates from '@/components/tours/TourDates'
 import TourGallery from '@/components/tours/TourGallery'
-import { Tabbar } from '@/components/layout/Tabbar'
 import { supabase } from '@/lib/supabase'
 import type { Country, Review, Tour, TourDate, TourMedia } from '@/types'
 
@@ -185,8 +184,6 @@ export default async function TourPage({ params }: TourPageProps) {
           </Link>
         </div>
       </div>
-
-      <Tabbar />
     </main>
   )
 }

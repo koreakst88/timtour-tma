@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Tabbar } from '@/components/layout/Tabbar'
 import { supabase } from '@/lib/supabase'
 import type { Booking, Country, Tour, TourMedia } from '@/types'
 
@@ -132,8 +131,6 @@ export default function BookingsPage() {
           </section>
         )}
       </div>
-
-      <Tabbar active="bookings" />
     </main>
   )
 }

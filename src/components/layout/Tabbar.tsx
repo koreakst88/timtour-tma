@@ -19,16 +19,27 @@ const items = [
 
 export function Tabbar({ active }: TabbarProps) {
   const pathname = usePathname()
+  const inferredActive: TabbarItem | undefined =
+    active ??
+    (pathname === '/favorites'
+      ? 'favorites'
+      : pathname === '/bookings'
+        ? 'bookings'
+        : pathname === '/profile'
+          ? 'profile'
+          : pathname === '/client' ||
+              pathname.startsWith('/client/') ||
+              pathname === '/catalog' ||
+              pathname.startsWith('/tour/') ||
+              pathname.startsWith('/booking/')
+            ? 'home'
+            : undefined)
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-[#FF6B35] shadow-[0_-4px_20px_rgba(255,107,53,0.3)]">
       <div className="mx-auto flex h-full w-full max-w-md items-center justify-between px-3">
         {items.map(({ href, label, icon: Icon, key }) => {
-          const isCatalogPath = pathname === '/catalog' || pathname === '/client/catalog'
-          const isActive =
-            active === key ||
-            (active === 'catalog' && key === 'home' && isCatalogPath) ||
-            pathname === href
+          const isActive = inferredActive === key || pathname === href
 
           return (
             <Link

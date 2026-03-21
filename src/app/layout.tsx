@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppInit from "@/components/shared/AppInit";
+import AppChrome from "@/components/layout/AppChrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AppInit />
-        {children}
+        <AppChrome>{children}</AppChrome>
       </body>
     </html>
   );
