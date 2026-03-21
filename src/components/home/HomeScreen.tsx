@@ -4,13 +4,15 @@ import Link from 'next/link'
 import { useDeferredValue, useState } from 'react'
 import { Search } from 'lucide-react'
 import Header from '@/components/layout/Header'
-import type { Country } from '@/types'
+import TourCard from '@/components/tours/TourCard'
+import type { Country, Tour } from '@/types'
 
 type HomeScreenProps = {
   countries: Country[]
+  popularTours: Tour[]
 }
 
-export default function HomeScreen({ countries }: HomeScreenProps) {
+export default function HomeScreen({ countries, popularTours }: HomeScreenProps) {
   const [query, setQuery] = useState('')
   const deferredQuery = useDeferredValue(query)
   const normalizedQuery = deferredQuery.trim().toLowerCase()
@@ -101,6 +103,19 @@ export default function HomeScreen({ countries }: HomeScreenProps) {
         >
           Все направления →
         </Link>
+
+        <section className="px-4 mt-6 mb-6">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-lg font-bold">🔥 Популярные туры</h2>
+            <Link href="/catalog" className="text-sm font-bold text-[#FF6B35]">
+              Все →
+            </Link>
+          </div>
+
+          {popularTours.map((tour) => (
+            <TourCard key={tour.id} tour={tour} />
+          ))}
+        </section>
       </main>
 
     </div>

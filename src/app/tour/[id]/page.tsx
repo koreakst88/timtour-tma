@@ -74,7 +74,7 @@ export default async function TourPage({ params }: TourPageProps) {
   const typeLabel = fullTour.type === 'group' ? 'Групповой' : 'Индивидуальный'
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] pb-36 text-[#1F1F1B]">
+    <main className="min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md">
         <section className="relative">
           <TourGallery images={photos} title={fullTour.title} />
@@ -174,15 +174,12 @@ export default async function TourPage({ params }: TourPageProps) {
         </div>
       </div>
 
-      <div className="fixed bottom-16 left-0 right-0 z-20 border-t border-gray-100 bg-[#FAFAF8] px-4 pb-4">
-        <div className="mx-auto w-full max-w-md">
-          <Link
-            href={`/booking/${fullTour.id}`}
-            className="flex h-14 w-full items-center justify-center rounded-2xl bg-[#FF6B35] text-lg font-bold text-white shadow-[0_18px_30px_rgba(255,107,53,0.28)]"
-          >
+      <div className="mx-auto w-full max-w-md px-4 py-6 mt-4">
+        <Link href={`/booking/${fullTour.id}`}>
+          <button className="h-14 w-full rounded-2xl bg-[#FF6B35] text-lg font-bold text-white transition-transform active:scale-95">
             Забронировать тур
-          </Link>
-        </div>
+          </button>
+        </Link>
       </div>
     </main>
   )
