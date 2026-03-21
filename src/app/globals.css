@@ -46,6 +46,13 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* TimTour Custom Brand Colors */
+  --color-timtour-bg: #FAFAF8;
+  --color-timtour-primary: #FF6B35;
+  --color-timtour-secondary: #F4A261;
+  --color-timtour-gold: #C9A84C;
+  --color-timtour-blue: #5BB8D4;
 }
 
 :root {
