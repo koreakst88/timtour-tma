@@ -31,7 +31,7 @@ export default function CatalogClient({
 
   return (
     <div className="mx-auto w-full max-w-md px-4 pt-2 text-[#1F1F1B]">
-      <div className="sticky top-0 z-10 -mx-4 bg-[#FAFAF8] px-4 pb-2 pt-4">
+      <div className="sticky top-0 z-20 -mx-4 bg-[#FAFAF8] px-4 pb-2 pt-4 shadow-sm">
         <h1 className="text-[28px] font-extrabold tracking-[-0.03em] text-[#1F1F1B]">
           Все направления
         </h1>
