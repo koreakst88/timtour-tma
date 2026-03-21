@@ -1,33 +1,24 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { Suspense, use, useState } from 'react'
 import { Search } from 'lucide-react'
+import { SkeletonCard } from '@/components/shared/SkeletonCard'
 import TourCard from '@/components/tours/TourCard'
 import type { Country, Tour } from '@/types'
 
 type CatalogClientProps = {
   countries: Country[]
-  tours: Tour[]
+  toursPromise: Promise<Tour[]>
   initialCountry?: string
 }
 
 export default function CatalogClient({
   countries,
-  tours,
+  toursPromise,
   initialCountry,
 }: CatalogClientProps) {
   const [activeCountry, setActiveCountry] = useState<string | null>(initialCountry ?? null)
   const [searchQuery, setSearchQuery] = useState('')
-
-  const filteredTours = useMemo(() => {
-    return tours.filter((tour) => {
-      const matchCountry = !activeCountry || tour.country_id === activeCountry
-      const matchSearch =
-        !searchQuery || tour.title.toLowerCase().includes(searchQuery.toLowerCase())
-
-      return matchCountry && matchSearch
-    })
-  }, [activeCountry, searchQuery, tours])
 
   return (
     <div className="w-full max-w-full overflow-x-hidden text-[#1F1F1B]">
@@ -87,16 +78,55 @@ export default function CatalogClient({
           </div>
         </div>
 
-        <div className="w-full px-4 pb-6 pt-4">
-          {filteredTours.length > 0 ? (
-            filteredTours.map((tour) => <TourCard key={tour.id} tour={tour} />)
-          ) : (
-            <div className="rounded-[20px] bg-white px-5 py-10 text-center text-sm font-medium text-[#6F6F68] shadow-[0_14px_30px_rgba(32,26,23,0.06)]">
-              Туры не найдены 😔
+        <Suspense
+          fallback={
+            <div className="w-full px-4 pb-6 pt-4">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
             </div>
-          )}
-        </div>
+          }
+        >
+          <ToursList
+            toursPromise={toursPromise}
+            activeCountry={activeCountry}
+            searchQuery={searchQuery}
+          />
+        </Suspense>
       </div>
+    </div>
+  )
+}
+
+function ToursList({
+  toursPromise,
+  activeCountry,
+  searchQuery,
+}: {
+  toursPromise: Promise<Tour[]>
+  activeCountry: string | null
+  searchQuery: string
+}) {
+  const tours = use(toursPromise)
+  const normalizedSearch = searchQuery.trim().toLowerCase()
+
+  const filteredTours = tours.filter((tour) => {
+    const matchCountry = !activeCountry || tour.country_id === activeCountry
+    const matchSearch =
+      !normalizedSearch || tour.title.toLowerCase().includes(normalizedSearch)
+
+    return matchCountry && matchSearch
+  })
+
+  return (
+    <div className="w-full px-4 pb-6 pt-4">
+      {filteredTours.length > 0 ? (
+        filteredTours.map((tour) => <TourCard key={tour.id} tour={tour} />)
+      ) : (
+        <div className="rounded-[20px] bg-white px-5 py-10 text-center text-sm font-medium text-[#6F6F68] shadow-[0_14px_30px_rgba(32,26,23,0.06)]">
+          Туры не найдены 😔
+        </div>
+      )}
     </div>
   )
 }

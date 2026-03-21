@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useEffectEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Clock3 } from 'lucide-react'
@@ -11,7 +12,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   const images = [...(tour.media ?? [])]
-    .filter((mediaItem) => mediaItem.type === 'photo')
+    .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
     .sort((left, right) => left.order - right.order)
     .map((mediaItem) => mediaItem.url)
 
@@ -40,12 +41,20 @@ export default function TourCard({ tour }: { tour: Tour }) {
           images.map((image, index) => (
             <div
               key={`${tour.id}-${image}-${index}`}
-              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${
+              className={`absolute inset-0 transition-opacity duration-700 ${
                 index === activeImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
-              style={{ backgroundImage: `url(${image})` }}
               aria-hidden={index !== activeImageIndex}
-            />
+            >
+              <Image
+                src={image}
+                alt={tour.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                loading="lazy"
+              />
+            </div>
           ))
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B35] via-[#FF8A5B] to-[#F4A261]" />

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useDeferredValue, useState } from 'react'
 import { Search } from 'lucide-react'
@@ -73,10 +74,12 @@ export default function HomeScreen({ countries, popularTours }: HomeScreenProps)
                 >
                   <div className="relative h-full w-full">
                     {country.cover_url ? (
-                      <img
+                      <Image
                         src={country.cover_url}
                         alt={country.name}
-                        className="h-full w-full object-cover"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 50vw, 25vw"
                       />
                     ) : (
                       <div className="h-full w-full bg-gradient-to-br from-[#FF6B35] to-[#F4A261]" />

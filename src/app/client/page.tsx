@@ -1,10 +1,15 @@
-import HomeScreen from '@/components/home/HomeScreen'
+import { Suspense } from 'react'
+import Link from 'next/link'
+import Header from '@/components/layout/Header'
+import CountriesGridClient from '@/components/home/CountriesGridClient'
+import { SkeletonCard, SkeletonCountryCard } from '@/components/shared/SkeletonCard'
+import TourCard from '@/components/tours/TourCard'
 import { supabase } from '@/lib/supabase'
 import type { Country, Tour } from '@/types'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
-export default async function HomePage() {
+async function CountriesGrid() {
   const { data, error } = await supabase
     .from('countries')
     .select('*')
@@ -12,22 +17,96 @@ export default async function HomePage() {
     .eq('is_active', true)
     .order('order')
 
-  const { data: popularTours, error: popularToursError } = await supabase
+  if (error) {
+    console.error('Failed to load priority countries', error)
+  }
+
+  return <CountriesGridClient countries={(data ?? []) as Country[]} />
+}
+
+async function PopularToursSection() {
+  const { data: popularTours, error } = await supabase
     .from('tours')
     .select('*, country:countries(*), media:tour_media(*)')
     .eq('is_active', true)
     .limit(4)
 
   if (error) {
-    console.error('Failed to load priority countries', error)
+    console.error('Failed to load popular tours', error)
   }
 
-  if (popularToursError) {
-    console.error('Failed to load popular tours', popularToursError)
-  }
-
-  const countries = (data ?? []) as Country[]
   const tours = (popularTours ?? []) as Tour[]
 
-  return <HomeScreen countries={countries} popularTours={tours} />
+  return (
+    <section className="mt-6 mb-6 px-4">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-bold">🔥 Популярные туры</h2>
+        <Link href="/catalog" className="text-sm font-bold text-[#FF6B35]">
+          Все →
+        </Link>
+      </div>
+
+      {tours.map((tour) => (
+        <TourCard key={tour.id} tour={tour} />
+      ))}
+    </section>
+  )
+}
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
+      <main className="mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-32 pt-6">
+        <Header />
+
+        <section className="mt-5 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#FF6B35] to-[#F4A261] p-5 text-white shadow-[0_22px_45px_rgba(255,107,53,0.28)]">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="text-2xl font-extrabold">🔥 Весенние туры</p>
+              <p className="mt-2 text-sm font-medium text-white/85">Скидки до 20%</p>
+            </div>
+            <Link
+              href="/catalog"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-white/22 px-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/28"
+            >
+              Смотреть →
+            </Link>
+          </div>
+        </section>
+
+        <Suspense
+          fallback={
+            <>
+              <section className="mt-6">
+                <div className="h-14 w-full animate-pulse rounded-[20px] bg-white shadow-sm" />
+              </section>
+              <section className="mt-8">
+                <div className="mb-4 h-6 w-40 animate-pulse rounded bg-gray-200" />
+                <div className="grid grid-cols-2 gap-3 px-4">
+                  <SkeletonCountryCard />
+                  <SkeletonCountryCard />
+                  <SkeletonCountryCard />
+                  <SkeletonCountryCard />
+                </div>
+              </section>
+            </>
+          }
+        >
+          <CountriesGrid />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <div className="mt-6 mb-6 px-4">
+              <div className="mb-3 h-6 w-36 animate-pulse rounded bg-gray-200" />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          }
+        >
+          <PopularToursSection />
+        </Suspense>
+      </main>
+    </div>
+  )
 }
