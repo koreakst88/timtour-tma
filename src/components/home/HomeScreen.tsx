@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useDeferredValue, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Search } from 'lucide-react'
 import Header from '@/components/layout/Header'
 import TourCard from '@/components/tours/TourCard'
@@ -14,6 +15,7 @@ type HomeScreenProps = {
 }
 
 export default function HomeScreen({ countries, popularTours }: HomeScreenProps) {
+  const router = useRouter()
   const [query, setQuery] = useState('')
   const deferredQuery = useDeferredValue(query)
   const normalizedQuery = deferredQuery.trim().toLowerCase()
@@ -34,10 +36,10 @@ export default function HomeScreen({ countries, popularTours }: HomeScreenProps)
             </span>
             <input
               type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              readOnly
+              onClick={() => router.push('/catalog')}
               placeholder="Поиск туров..."
-              className="h-14 w-full rounded-[20px] border border-white bg-white pl-12 pr-4 text-[15px] text-[#1F1F1B] shadow-[0_14px_35px_rgba(32,26,23,0.07)] outline-none transition placeholder:text-[#B3B2AA] focus:border-[#FF6B35]/30 focus:ring-4 focus:ring-[#FF6B35]/10"
+              className="h-14 w-full cursor-pointer rounded-[20px] border border-white bg-white pl-12 pr-4 text-[15px] text-[#1F1F1B] shadow-[0_14px_35px_rgba(32,26,23,0.07)] outline-none transition placeholder:text-[#B3B2AA] focus:border-[#FF6B35]/30 focus:ring-4 focus:ring-[#FF6B35]/10"
             />
           </label>
         </section>

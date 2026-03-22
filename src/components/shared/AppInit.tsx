@@ -14,6 +14,17 @@ export default function AppInit() {
     const init = async () => {
       if (typeof window === 'undefined') return;
 
+      const tg = window?.Telegram?.WebApp
+      if (tg) {
+        tg.ready()
+        tg.expand()
+        // Запрещаем вертикальный свайп 
+        // чтобы не закрывалось при скролле
+        if (tg.disableVerticalSwipes) {
+          tg.disableVerticalSwipes()
+        }
+      }
+
       try {
         // Инициализация Telegram SDK
         await initTelegram();

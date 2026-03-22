@@ -13,6 +13,7 @@ type TelegramWebApp = {
     onClick: (fn: () => void) => void
     offClick: (fn: () => void) => void
   }
+  disableVerticalSwipes: () => void
 }
 
 declare global {
