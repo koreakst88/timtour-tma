@@ -34,9 +34,9 @@ export default function TourCard({ tour }: { tour: Tour }) {
     <Link
       href={`/tour/${tour.id}`}
       prefetch={true}
-      className="tap-effect relative mb-4 block w-full cursor-pointer overflow-hidden rounded-[20px] bg-white text-left shadow-[0_18px_36px_rgba(26,20,17,0.08)] transition active:scale-[0.99]"
+      className="tap-effect relative mb-5 block w-full cursor-pointer overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_40px_rgba(26,20,17,0.08)] ring-1 ring-black/5 transition active:scale-[0.99]"
     >
-      <div className="relative h-[200px] overflow-hidden">
+      <div className="relative h-[208px] overflow-hidden">
         {images.length > 0 ? (
           images.map((image, index) => (
             <div
@@ -60,7 +60,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
           <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B35] via-[#FF8A5B] to-[#F4A261]" />
         )}
 
-        <div className="absolute left-4 top-4 inline-flex h-9 items-center rounded-full bg-white/92 px-3 text-xs font-bold text-[#FF6B35] backdrop-blur-sm">
+        <div className="absolute left-4 top-4 inline-flex h-9 items-center rounded-full bg-white/92 px-3.5 text-xs font-bold text-[#FF6B35] backdrop-blur-sm">
           {typeLabel}
         </div>
 
@@ -71,8 +71,10 @@ export default function TourCard({ tour }: { tour: Tour }) {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 to-transparent" />
       </div>
 
-      <div className="space-y-3 p-4">
-        <h2 className="text-lg font-extrabold leading-tight text-[#1F1F1B]">{tour.title}</h2>
+      <div className="space-y-3.5 p-5">
+        <h2 className="text-[28px] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1F1F1B]">
+          {tour.title}
+        </h2>
 
         <p className="text-sm font-semibold text-[#6B6A64]">
           {tour.country?.flag_emoji ? `${tour.country.flag_emoji} ` : ''}
@@ -85,7 +87,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
             <span>{tour.duration_days} дней</span>
           </div>
 
-          <div className="text-right text-lg font-extrabold text-[#FF6B35]">{tour.price}</div>
+          <div className="text-right text-[18px] font-extrabold text-[#FF6B35]">{tour.price}</div>
         </div>
       </div>
     </Link>
