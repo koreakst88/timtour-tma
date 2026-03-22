@@ -51,5 +51,23 @@ export default function AppInit() {
     init();
   }, []);
 
+  useEffect(() => {
+    const tg = window?.Telegram?.WebApp
+
+    // Telegram сам сообщает об открытии клавиатуры
+    if (tg?.onEvent) {
+      tg.onEvent('viewportChanged', (event: any) => {
+        const tabbar = document.getElementById('tabbar')
+        if (tabbar) {
+          if (event.isStateStable === false) {
+            tabbar.style.display = 'none'
+          } else {
+            tabbar.style.display = 'flex'
+          }
+        }
+      })
+    }
+  }, [])
+
   return null;
 }

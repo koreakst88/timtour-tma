@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Compass, Heart, ClipboardList, User } from 'lucide-react'
+import { useKeyboardVisible } from '@/hooks/useKeyboardVisible'
 
 type TabbarItem = 'home' | 'catalog' | 'favorites' | 'bookings' | 'profile'
 
@@ -19,6 +20,10 @@ const items = [
 
 export function Tabbar({ active }: TabbarProps) {
   const pathname = usePathname()
+  const isKeyboardVisible = useKeyboardVisible()
+
+  if (isKeyboardVisible) return null
+
   const inferredActive: TabbarItem | undefined =
     active ??
     (pathname === '/favorites'
@@ -36,7 +41,10 @@ export function Tabbar({ active }: TabbarProps) {
             : undefined)
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-[#FF6B35] shadow-[0_-4px_20px_rgba(255,107,53,0.3)]">
+    <nav
+      id="tabbar"
+      className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-[#FF6B35] shadow-[0_-4px_20px_rgba(255,107,53,0.3)]"
+    >
       <div className="mx-auto flex h-full w-full max-w-md items-center justify-between px-3">
         {items.map(({ href, label, icon: Icon, key }) => {
           const isActive = inferredActive === key || pathname === href
