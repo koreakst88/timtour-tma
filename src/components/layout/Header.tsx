@@ -41,30 +41,30 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between bg-[#FAFAF8] px-4 pt-4 pb-3">
-      <div className="flex w-16 shrink-0 items-center justify-start">
+      <div className="flex w-20 shrink-0 items-center justify-start">
         <img
-          src="/images/logo-cropped.jpg"
+          src="/images/Logo.PNG"
           alt="TimTour"
-          className="h-14 w-14 rounded-full bg-white object-cover shadow-[0_8px_20px_rgba(0,0,0,0.08)] ring-1 ring-[#EAD9B4]"
+          className="h-14 w-14 object-contain rounded-xl"
         />
       </div>
 
       <div className="flex flex-1 flex-col items-center px-3 text-center">
-        <p className="text-base font-black text-gray-900">
+        <p className="text-lg font-black text-gray-900">
           Привет{userName ? `, ${userName}` : ''}! 👋
         </p>
-        <p className="text-xs font-medium text-gray-400">Куда летим?</p>
+        <p className="text-sm font-medium text-gray-400">Куда летим?</p>
       </div>
 
-      <div className="flex w-10 shrink-0 items-center justify-end">
+      <div className="flex w-20 shrink-0 items-center justify-end">
         {photoUrl ? (
           <img
             src={photoUrl}
             alt="avatar"
-            className="h-10 w-10 rounded-full object-cover"
+            className="w-14 h-14 rounded-full object-cover"
           />
         ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF6B35]/20 font-bold text-[#FF6B35]">
+          <div className="flex w-14 h-14 items-center justify-center rounded-full bg-[#FF6B35]/20 text-lg font-bold text-[#FF6B35]">
             {userName ? userName[0].toUpperCase() : '👤'}
           </div>
         )}
