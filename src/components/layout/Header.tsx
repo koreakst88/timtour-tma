@@ -41,22 +41,22 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between bg-[#FAFAF8] px-4 pt-4 pb-3">
-      <div className="flex w-20 shrink-0 items-center justify-start">
+      <div className="flex w-16 shrink-0 items-center justify-start">
         <img
-          src="/images/Logo.PNG"
+          src="/images/logo.png"
           alt="TimTour"
-          className="h-14 w-14 object-contain rounded-xl"
+          className="h-16 w-16 rounded-full bg-[#FAFAF8] object-contain"
         />
       </div>
 
-      <div className="flex flex-1 flex-col items-center px-3 text-center">
-        <p className="text-lg font-black text-gray-900">
+      <div className="flex min-w-0 flex-1 flex-col items-center px-2">
+        <p className="whitespace-nowrap text-base font-black text-gray-900">
           Привет{userName ? `, ${userName}` : ''}! 👋
         </p>
-        <p className="text-sm font-medium text-gray-400">Куда летим?</p>
+        <p className="whitespace-nowrap text-xs font-medium text-gray-400">Куда летим?</p>
       </div>
 
-      <div className="flex w-20 shrink-0 items-center justify-end">
+      <div className="flex w-14 shrink-0 items-center justify-end">
         {photoUrl ? (
           <img
             src={photoUrl}
