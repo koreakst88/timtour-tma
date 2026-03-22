@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { BackHeader } from '@/components/layout/BackHeader'
 import FavoriteButton from '@/components/tours/FavoriteButton'
 import TourAccordion from '@/components/tours/TourAccordion'
-import TourBackButton from '@/components/tours/TourBackButton'
 import TourDates from '@/components/tours/TourDates'
 import TourGallery from '@/components/tours/TourGallery'
 import { supabase } from '@/lib/supabase'
@@ -77,15 +77,11 @@ export default async function TourPage({ params }: TourPageProps) {
   return (
     <main className="page-transition min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md">
+        <BackHeader />
+
         <div className="fade-in">
           <section className="relative">
             <TourGallery images={photos} title={fullTour.title} />
-
-            <TourBackButton />
-
-            <div className="absolute right-4 top-4 z-10">
-              <FavoriteButton tourId={fullTour.id} />
-            </div>
 
             <div className="absolute bottom-4 left-4 z-10 inline-flex rounded-full bg-white/90 px-3 py-2 text-xs font-bold text-[#FF6B35] backdrop-blur-sm">
               {typeLabel}
@@ -95,9 +91,14 @@ export default async function TourPage({ params }: TourPageProps) {
 
         <div className="fade-in px-4 pt-5" style={{ animationDelay: '0.05s' }}>
           <section>
-            <h1 className="text-[30px] font-extrabold leading-tight tracking-[-0.03em]">
-              {fullTour.title}
-            </h1>
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="text-[30px] font-extrabold leading-tight tracking-[-0.03em]">
+                {fullTour.title}
+              </h1>
+              <div className="shrink-0">
+                <FavoriteButton tourId={fullTour.id} />
+              </div>
+            </div>
             <p className="mt-2 text-base font-semibold text-[#66655E]">
               {fullTour.country?.flag_emoji ? `${fullTour.country.flag_emoji} ` : ''}
               {fullTour.country?.name ?? 'Направление'}

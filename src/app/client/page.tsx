@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import Header from '@/components/layout/Header'
+import Tabbar from '@/components/layout/Tabbar'
 import CountriesGridClient from '@/components/home/CountriesGridClient'
 import { SkeletonCard, SkeletonCountryCard } from '@/components/shared/SkeletonCard'
 import TourCard from '@/components/tours/TourCard'
@@ -107,6 +108,7 @@ export default function HomePage() {
           <PopularToursSection />
         </Suspense>
       </main>
+      <Tabbar active="home" />
     </div>
   )
 }

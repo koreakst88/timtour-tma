@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { BackHeader } from '@/components/layout/BackHeader'
 import BookingForm from '@/components/booking/BookingForm'
+import { supabase } from '@/lib/supabase'
 import type { Country, Tour, TourDate } from '@/types'
 
 type BookingPageProps = {
@@ -20,5 +21,12 @@ export default async function BookingPage({ params }: BookingPageProps) {
 
   if (!tour) notFound()
 
-  return <BookingForm tour={tour} />
+  return (
+    <main className="page-transition min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
+      <div className="mx-auto w-full max-w-md">
+        <BackHeader title="Бронирование" />
+        <BookingForm tour={tour} />
+      </div>
+    </main>
+  )
 }

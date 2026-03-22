@@ -23,12 +23,8 @@ export default function CatalogClient({
   return (
     <div className="w-full max-w-full overflow-x-hidden text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md px-4 pt-2">
-        <div className="sticky top-0 z-20 -mx-4 bg-[#FAFAF8] px-4 pb-2 shadow-sm">
-          <h1 className="pt-4 text-[28px] font-extrabold tracking-[-0.03em] text-[#1F1F1B]">
-            Все направления
-          </h1>
-
-          <label className="relative mt-4 block">
+        <div className="sticky top-[4.25rem] z-20 -mx-4 bg-[#FAFAF8] px-4 pb-2 shadow-sm">
+          <label className="relative mt-2 block">
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#9B9B93]">
               <Search className="h-5 w-5" />
             </span>

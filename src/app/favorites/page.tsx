@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { BackHeader } from '@/components/layout/BackHeader'
 import TourCard from '@/components/tours/TourCard'
 import { supabase } from '@/lib/supabase'
 import type { Tour } from '@/types'
@@ -56,17 +57,15 @@ export default function FavoritesPage() {
 
   return (
     <main className="page-transition min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
-      <div className="mx-auto w-full max-w-md px-4 pt-6 pb-24">
-        <header>
-          <h1 className="text-[30px] font-extrabold tracking-[-0.03em]">Избранное</h1>
-        </header>
+      <div className="mx-auto w-full max-w-md pb-10">
+        <BackHeader title="Избранное" />
 
         {isLoading ? (
           <div className="flex h-64 items-center justify-center text-sm font-medium text-gray-500">
             Загружаем избранные туры...
           </div>
         ) : favoriteIds.length === 0 ? (
-          <div className="flex h-64 flex-col items-center justify-center gap-4">
+          <div className="flex h-64 flex-col items-center justify-center gap-4 px-4">
             <span className="text-6xl">❤️</span>
             <p className="font-medium text-gray-500">Нет избранных туров</p>
             <Link href="/catalog">
@@ -76,7 +75,7 @@ export default function FavoritesPage() {
             </Link>
           </div>
         ) : (
-          <div className="mt-5">
+          <div className="mt-5 px-4">
             {tours.map((tour) => (
               <TourCard key={tour.id} tour={tour} />
             ))}

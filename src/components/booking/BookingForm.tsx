@@ -108,23 +108,8 @@ export default function BookingForm({ tour }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] pb-24 text-[#1F1F1B]">
+    <div className="pb-10 text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md">
-        {/* Хедер */}
-        <header className="sticky top-0 z-30 flex items-center gap-3 bg-[#FAFAF8]/90 px-4 py-4 backdrop-blur-sm">
-          <button
-            type="button"
-            onClick={() => window.history.back()}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-lg font-medium text-[#1F1F1B] shadow-sm"
-            aria-label="Назад"
-          >
-            ←
-          </button>
-          <h1 className="text-base font-extrabold tracking-tight">
-            Бронирование
-          </h1>
-        </header>
-
         {/* Карточка тура */}
         <div className="mx-4 rounded-2xl bg-white px-5 py-4 shadow-[0_8px_20px_rgba(32,26,23,0.06)] ring-1 ring-black/5">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#FF6B35]">
@@ -318,7 +303,7 @@ export default function BookingForm({ tour }: Props) {
           </button>
         </form>
       </div>
-    </main>
+    </div>
   )
 }
 

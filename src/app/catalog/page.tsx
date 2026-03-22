@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { BackHeader } from '@/components/layout/BackHeader'
 import CatalogClient from '@/components/catalog/CatalogClient'
 import { SkeletonCard } from '@/components/shared/SkeletonCard'
 import { supabase } from '@/lib/supabase'
@@ -52,7 +53,10 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const toursPromise = getTours()
 
   return (
-    <main className="page-transition min-h-screen bg-[#FAFAF8] pb-24">
+    <main className="page-transition min-h-screen bg-[#FAFAF8] pb-10">
+      <div className="mx-auto w-full max-w-md">
+        <BackHeader title="Все направления" />
+      </div>
       <Suspense
         fallback={
           <div className="px-4 space-y-4 pt-6">

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo } from 'react'
+import { BackHeader } from '@/components/layout/BackHeader'
 import { getTelegramUser } from '@/lib/telegram'
 
 function InstagramIcon() {
@@ -112,62 +113,66 @@ export default function ProfilePage() {
   }, [user?.first_name, user?.last_name])
 
   return (
-    <main className="page-transition min-h-screen bg-[#FAFAF8] pb-24 text-[#1F1F1B]">
-      <div className="mx-auto w-full max-w-md px-4 pt-6">
-        <section className="rounded-[24px] bg-white p-6 text-center shadow-[0_16px_32px_rgba(28,23,18,0.08)]">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[#FFE7DD] text-2xl font-bold text-[#FF6B35]">
-            {user?.photo_url ? (
-              <img
-                src={user.photo_url}
-                alt={fullName}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              initials
-            )}
-          </div>
+    <main className="page-transition min-h-screen bg-[#FAFAF8] pb-10 text-[#1F1F1B]">
+      <div className="mx-auto w-full max-w-md">
+        <BackHeader title="Профиль" />
 
-          <h1 className="mt-4 text-[26px] font-extrabold tracking-[-0.03em]">{fullName}</h1>
-          {user?.username ? (
-            <p className="mt-1 text-sm font-medium text-[#6F6F68]">@{user.username}</p>
-          ) : null}
-        </section>
+        <div className="px-4 pt-4">
+          <section className="rounded-[24px] bg-white p-6 text-center shadow-[0_16px_32px_rgba(28,23,18,0.08)]">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[#FFE7DD] text-2xl font-bold text-[#FF6B35]">
+              {user?.photo_url ? (
+                <img
+                  src={user.photo_url}
+                  alt={fullName}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                initials
+              )}
+            </div>
 
-        <section className="mt-5 space-y-3">
-          <Link
-            href="/bookings"
-            className="flex items-center justify-between rounded-[16px] bg-white px-4 py-4 text-sm font-bold shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
-          >
-            <span>📋 Мои заявки</span>
-            <span className="text-[#FF6B35]">→</span>
-          </Link>
+            <h1 className="mt-4 text-[26px] font-extrabold tracking-[-0.03em]">{fullName}</h1>
+            {user?.username ? (
+              <p className="mt-1 text-sm font-medium text-[#6F6F68]">@{user.username}</p>
+            ) : null}
+          </section>
 
-          <button
-            type="button"
-            onClick={() => openExternal('tg://resolve?domain=TimTour_WW')}
-            className="flex w-full items-center justify-between rounded-[16px] bg-white px-4 py-4 text-sm font-bold shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
-          >
-            <span>✉️ Написать менеджеру</span>
-            <span className="text-[#FF6B35]">→</span>
-          </button>
-        </section>
+          <section className="mt-5 space-y-3">
+            <Link
+              href="/bookings"
+              className="flex items-center justify-between rounded-[16px] bg-white px-4 py-4 text-sm font-bold shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
+            >
+              <span>📋 Мои заявки</span>
+              <span className="text-[#FF6B35]">→</span>
+            </Link>
 
-        <section className="mt-7">
-          <h2 className="text-lg font-extrabold">Мы в соцсетях</h2>
-          <div className="mt-4 grid grid-cols-2 gap-3 pb-6">
-            {socialLinks.map((item) => (
-              <button
-                key={item.label}
-                type="button"
-                onClick={() => openExternal(item.url)}
-                className="flex min-h-24 flex-col items-start justify-between rounded-[12px] bg-white px-4 py-4 text-left shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
-              >
-                <item.icon />
-                <span className="text-sm font-bold text-[#1F1F1B]">{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </section>
+            <button
+              type="button"
+              onClick={() => openExternal('tg://resolve?domain=TimTour_WW')}
+              className="flex w-full items-center justify-between rounded-[16px] bg-white px-4 py-4 text-sm font-bold shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
+            >
+              <span>✉️ Написать менеджеру</span>
+              <span className="text-[#FF6B35]">→</span>
+            </button>
+          </section>
+
+          <section className="mt-7">
+            <h2 className="text-lg font-extrabold">Мы в соцсетях</h2>
+            <div className="mt-4 grid grid-cols-2 gap-3 pb-6">
+              {socialLinks.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => openExternal(item.url)}
+                  className="flex min-h-24 flex-col items-start justify-between rounded-[12px] bg-white px-4 py-4 text-left shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
+                >
+                  <item.icon />
+                  <span className="text-sm font-bold text-[#1F1F1B]">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   )
