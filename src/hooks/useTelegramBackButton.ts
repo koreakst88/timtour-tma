@@ -27,6 +27,5 @@ export function useTelegramBackButton(customBack?: () => void) {
       tg.BackButton.offClick(handleBack)
       tg.BackButton.hide()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router, customBack])
 }
