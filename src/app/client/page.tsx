@@ -10,6 +10,53 @@ import type { Country, Tour } from '@/types'
 
 export const revalidate = 60
 
+async function HeroBanner() {
+  const { data, error } = await supabase
+    .from('tours')
+    .select('title, media:tour_media(*)')
+    .eq('is_active', true)
+    .limit(1)
+
+  if (error) {
+    console.error('Failed to load hero banner', error)
+  }
+
+  const tour = (data?.[0] ?? null) as Pick<Tour, 'title' | 'media'> | null
+  const heroImage = [...(tour?.media ?? [])]
+    .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
+    .sort((left, right) => left.order - right.order)[0]?.url
+
+  return (
+    <section className="relative mt-5 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#FF6B35] to-[#F4A261] text-white shadow-[0_22px_45px_rgba(255,107,53,0.28)]">
+      <div className="absolute inset-0">
+        {heroImage ? (
+          <img
+            src={heroImage}
+            alt={tour?.title ?? 'Весенние туры'}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="h-full w-full bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.32),_transparent_42%),linear-gradient(135deg,_#FF6B35,_#F4A261)]" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B35]/92 via-[#FF6B35]/70 to-[#F4A261]/42" />
+      </div>
+
+      <div className="relative flex min-h-[196px] items-end justify-between gap-4 p-5">
+        <div className="max-w-[12rem]">
+          <p className="text-2xl font-extrabold leading-tight">🔥 Весенние туры</p>
+          <p className="mt-2 text-sm font-medium text-white/85">Скидки до 20%</p>
+        </div>
+        <Link
+          href="/catalog"
+          className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-white/22 px-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/28"
+        >
+          Смотреть →
+        </Link>
+      </div>
+    </section>
+  )
+}
+
 async function CountriesGrid() {
   const { data, error } = await supabase
     .from('countries')
@@ -59,21 +106,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
       <main className="page-transition mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-32 pt-6">
         <Header />
-
-        <section className="mt-5 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#FF6B35] to-[#F4A261] p-5 text-white shadow-[0_22px_45px_rgba(255,107,53,0.28)]">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-2xl font-extrabold">🔥 Весенние туры</p>
-              <p className="mt-2 text-sm font-medium text-white/85">Скидки до 20%</p>
-            </div>
-            <Link
-              href="/catalog"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-white/22 px-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/28"
-            >
-              Смотреть →
-            </Link>
-          </div>
-        </section>
+        <HeroBanner />
 
         <Suspense
           fallback={
