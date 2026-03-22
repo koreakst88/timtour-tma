@@ -156,17 +156,15 @@
   animation: fadeIn 0.2s ease-out forwards;
 }
 
+/* Плавные переходы для интерактивных элементов */
 button,
 a {
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
+/* Эффект нажатия на карточки */
 .tap-effect {
-  transition:
-    transform 0.15s ease,
-    opacity 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .tap-effect:active {
