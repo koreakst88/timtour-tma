@@ -1,7 +1,6 @@
 'use client'
 
 import { Suspense, use, useState } from 'react'
-import { motion } from 'framer-motion'
 import { Search } from 'lucide-react'
 import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { SkeletonCard } from '@/components/shared/SkeletonCard'
@@ -26,12 +25,7 @@ export default function CatalogClient({
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <motion.div
-      className="w-full max-w-full overflow-x-hidden text-[#1F1F1B]"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-    >
+    <div className="page-transition w-full max-w-full overflow-x-hidden text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md px-4">
         <div className="sticky top-0 z-20 -mx-4 bg-[#FAFAF8] px-4 pt-3 pb-2 shadow-sm">
           <label className="relative block">
@@ -100,7 +94,7 @@ export default function CatalogClient({
           />
         </Suspense>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
