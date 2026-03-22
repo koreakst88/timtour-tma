@@ -41,12 +41,12 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between bg-[#FAFAF8] px-4 pt-4 pb-3">
-      <div className="flex w-[4.5rem] shrink-0 items-center justify-start">
-        <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-gradient-to-br from-[#FFF5EE] via-[#FFE7D8] to-[#F7D8BF] p-2 shadow-[0_10px_24px_rgba(255,107,53,0.12)] ring-1 ring-[#FF6B35]/10">
+      <div className="flex w-[4.25rem] shrink-0 items-center justify-start">
+        <div className="flex h-[4.25rem] w-[4.25rem] items-center justify-center overflow-hidden rounded-full bg-[#FAFAF8] shadow-[0_8px_20px_rgba(31,24,20,0.08)] ring-1 ring-[#EEDFD3]">
           <img
             src="/images/logo.png"
             alt="TimTour"
-            className="h-[3.7rem] w-[3.7rem] rounded-full object-contain mix-blend-multiply contrast-110 saturate-110"
+            className="h-full w-full scale-[1.72] object-contain"
           />
         </div>
       </div>
