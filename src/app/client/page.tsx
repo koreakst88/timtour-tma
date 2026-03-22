@@ -13,21 +13,44 @@ export const revalidate = 60
 async function HeroBanner() {
   const { data, error } = await supabase
     .from('tours')
-    .select('title, media:tour_media(*)')
+    .select('title, country:countries(name), media:tour_media(*)')
     .eq('is_active', true)
-    .limit(1)
+    .limit(12)
 
   if (error) {
     console.error('Failed to load hero banner', error)
   }
 
-  const tour = (data?.[0] ?? null) as Pick<Tour, 'title' | 'media'> | null
+  const tours = ((data ?? []) as Array<
+    Pick<Tour, 'title' | 'media'> & {
+      country?: Array<Pick<Country, 'name'>> | null
+    }
+  >).filter((tour) => (tour.media ?? []).some((mediaItem) => mediaItem.type === 'photo'))
+
+  const preferredDirections = [
+    'таиланд',
+    'фукуок',
+    'филиппин',
+    'боракай',
+    'пхукет',
+    'вьетнам',
+  ]
+
+  const tour =
+    tours.find((item) => {
+      const countryName = item.country?.[0]?.name ?? ''
+      const haystack = `${item.title} ${countryName}`.toLowerCase()
+      return preferredDirections.some((direction) => haystack.includes(direction))
+    }) ??
+    tours[0] ??
+    null
+
   const heroImage = [...(tour?.media ?? [])]
     .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
     .sort((left, right) => left.order - right.order)[0]?.url
 
   return (
-    <section className="relative mt-5 overflow-hidden rounded-[30px] bg-[#D58B62] text-white shadow-[0_24px_50px_rgba(166,103,64,0.22)]">
+    <section className="relative mt-5 overflow-hidden rounded-[30px] bg-[#E7B288] text-white shadow-[0_24px_50px_rgba(166,103,64,0.18)]">
       <div className="absolute inset-0">
         {heroImage ? (
           <img
@@ -36,33 +59,29 @@ async function HeroBanner() {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.24),_transparent_34%),linear-gradient(135deg,_#B76439,_#E29A66)]" />
+          <div className="h-full w-full bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.35),_transparent_30%),linear-gradient(135deg,_#E29A66,_#F2C49D)]" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#5A2D17]/76 via-[#8C4A27]/42 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/14 via-transparent to-white/8" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#734226]/58 via-[#B96B3E]/26 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/14" />
       </div>
 
       <div className="relative flex min-h-[210px] flex-col justify-between p-6">
-        <div className="inline-flex w-fit items-center rounded-full border border-white/20 bg-white/14 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/92 backdrop-blur-sm">
-          Spring selection
-        </div>
-
-        <div className="mt-8 flex items-end justify-between gap-4">
+        <div className="mt-10 flex items-end justify-between gap-4">
           <div className="max-w-[13.5rem]">
             <p className="text-[2rem] font-extrabold leading-[0.95] tracking-[-0.04em]">
               Весенние
               <br />
               туры
             </p>
-            <p className="mt-3 text-sm font-medium text-white/82">
-              Скидки до 20% на самые яркие маршруты сезона
+            <p className="mt-3 text-sm font-medium text-white/88">
+              Скидки до 20% на лучшие пляжные и курортные маршруты
             </p>
           </div>
 
-          <div className="shrink-0 rounded-[26px] border border-white/18 bg-white/16 p-1.5 backdrop-blur-md">
+          <div className="shrink-0 rounded-[26px] border border-white/16 bg-white/14 p-1.5 backdrop-blur-md">
             <Link
               href="/catalog"
-              className="inline-flex h-12 items-center justify-center rounded-[20px] bg-white px-5 text-sm font-semibold text-[#8B4A29] shadow-[0_8px_20px_rgba(255,255,255,0.18)] transition hover:bg-[#FFF7F1]"
+              className="inline-flex h-12 items-center justify-center rounded-[20px] bg-white px-5 text-sm font-semibold text-[#8B4A29] shadow-[0_8px_20px_rgba(255,255,255,0.16)] transition hover:bg-[#FFF7F1]"
             >
               Смотреть
               <span className="ml-2 text-base">→</span>
