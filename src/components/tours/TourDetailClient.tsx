@@ -60,30 +60,26 @@ export function TourDetailClient({
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#FF6B35] to-[#F4A261]" />
         )}
+      </div>
 
-        {/* Бейдж типа тура поверх фото */}
-        <div className="absolute bottom-4 left-4">
-          <span className="bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1.5 rounded-full text-sm font-semibold shadow-sm">
+      {/* БЕЛЫЙ БЛОК — скругление сверху, перекрывает низ фото */}
+      <div className="bg-white rounded-t-3xl -mt-6 relative z-10 px-5 pt-5 pb-36">
+
+        {/* Бейдж типа тура */}
+        <div className="mb-3">
+          <span className="bg-[#FF6B35]/10 text-[#FF6B35] px-3 py-1 rounded-full text-sm font-semibold">
             {tour.type === 'group'
               ? '👥 Групповой'
               : '🧳 Индивидуальный'}
           </span>
         </div>
 
-        {/* Кнопка избранного в углу фото */}
-        <div className="absolute top-4 right-4">
-          <FavoriteButton tourId={tour.id} />
-        </div>
-      </div>
-
-      {/* БЕЛЫЙ БЛОК — скругление сверху, перекрывает низ фото */}
-      <div className="bg-white rounded-t-3xl -mt-6 relative z-10 px-5 pt-6 pb-36">
-
-        {/* Заголовок */}
+        {/* Заголовок + избранное */}
         <div className="flex justify-between items-start mb-2">
           <h1 className="text-2xl font-black text-gray-900 flex-1 pr-3 leading-tight">
             {tour.title}
           </h1>
+          <FavoriteButton tourId={tour.id} />
         </div>
 
         {/* Страна и длительность */}

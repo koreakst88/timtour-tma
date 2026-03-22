@@ -26,8 +26,8 @@ export default function CatalogClient({
 
   return (
     <div className="w-full max-w-full overflow-x-hidden text-[#1F1F1B]">
-      <div className="mx-auto w-full max-w-md px-4 pt-0">
-        <div className="sticky top-16 z-20 -mx-4 border-b border-black/5 bg-[#FAFAF8]/95 px-4 pb-4 pt-1 shadow-[0_10px_25px_rgba(32,26,23,0.05)] backdrop-blur-sm">
+      <div className="mx-auto w-full max-w-md px-4">
+        <div className="sticky top-0 z-20 -mx-4 bg-[#FAFAF8] px-4 pt-3 pb-2 shadow-sm">
           <label className="relative block">
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#9B9B93]">
               <Search className="h-5 w-5" />
@@ -119,7 +119,7 @@ function ToursList({
   })
 
   return (
-    <div className="w-full px-4 pb-8 pt-8">
+    <div className="w-full px-4 pb-8 pt-3">
       {filteredTours.length > 0 ? (
         filteredTours.map((tour) => <TourCard key={tour.id} tour={tour} />)
       ) : (
