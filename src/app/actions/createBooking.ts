@@ -11,24 +11,40 @@ export type BookingData = {
   comment?: string
   travelDate: string
   peopleCount: number
+  totalPrice: number
 }
 
 export async function createBooking(data: BookingData): Promise<string> {
   // 1. Сохраняем в Supabase
-  const { data: booking, error } = await supabase
+  const bookingPayload = {
+    tour_id: data.tourId,
+    user_tg_id: data.userTgId,
+    user_name: data.userName,
+    phone: data.phone,
+    comment: data.comment,
+    travel_date: data.travelDate,
+    people_count: data.peopleCount,
+    total_price: data.totalPrice,
+    status: 'new',
+  }
+
+  let { data: booking, error } = await supabase
     .from('bookings')
-    .insert({
-      tour_id: data.tourId,
-      user_tg_id: data.userTgId,
-      user_name: data.userName,
-      phone: data.phone,
-      comment: data.comment,
-      travel_date: data.travelDate,
-      people_count: data.peopleCount,
-      status: 'new',
-    })
+    .insert(bookingPayload)
     .select()
     .single()
+
+  if (error?.message?.includes('total_price')) {
+    const { total_price, ...fallbackPayload } = bookingPayload
+    const fallbackResult = await supabase
+      .from('bookings')
+      .insert(fallbackPayload)
+      .select()
+      .single()
+
+    booking = fallbackResult.data
+    error = fallbackResult.error
+  }
 
   if (error) throw new Error(error.message)
 
@@ -45,6 +61,7 @@ export async function createBooking(data: BookingData): Promise<string> {
 ✈️ Тур: ${data.tourTitle}
 📅 Дата: ${data.travelDate}
 👥 Человек: ${data.peopleCount}
+💰 Сумма: ₩${data.totalPrice.toLocaleString('ko-KR')}
 💬 Комментарий: ${data.comment || 'нет'}
 
 #заявка_${booking.id.slice(0, 8)}

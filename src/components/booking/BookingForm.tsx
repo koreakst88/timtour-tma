@@ -19,6 +19,15 @@ type FormErrors = {
   travelDate?: string
 }
 
+const parsePrice = (priceStr: string): number => {
+  const nums = priceStr.replace(/[^0-9]/g, '')
+  return parseInt(nums) || 0
+}
+
+const formatPrice = (amount: number): string => {
+  return '₩' + amount.toLocaleString('ko-KR')
+}
+
 const formatDateLabel = (d: TourDate) => {
   const opts: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' }
   const fmt = (s: string) =>
@@ -59,6 +68,8 @@ export default function BookingForm({ tour }: Props) {
           new Date(a.date_start).getTime() - new Date(b.date_start).getTime(),
       )
     : []
+  const basePrice = parsePrice(tour.price)
+  const totalPrice = basePrice * peopleCount
 
   // When user picks a group date, derive travelDate from it
   const handleSelectDate = (d: TourDate) => {
@@ -95,6 +106,7 @@ export default function BookingForm({ tour }: Props) {
         comment: comment.trim() || undefined,
         travelDate,
         peopleCount,
+        totalPrice,
       })
       setBookingId(id)
     } catch (err) {
@@ -214,6 +226,24 @@ export default function BookingForm({ tour }: Props) {
               >
                 +
               </button>
+            </div>
+            <div className="mt-2 rounded-2xl bg-[#FF6B35]/5 p-4">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-sm text-gray-500">
+                  {formatPrice(basePrice)} × {peopleCount} чел.
+                </span>
+                <span className="text-sm text-gray-500">
+                  =
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-base font-bold text-gray-900">
+                  Итого:
+                </span>
+                <span className="text-xl font-black text-[#FF6B35]">
+                  {formatPrice(totalPrice)}
+                </span>
+              </div>
             </div>
           </div>
 
