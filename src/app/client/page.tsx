@@ -27,7 +27,7 @@ async function HeroBanner() {
     .sort((left, right) => left.order - right.order)[0]?.url
 
   return (
-    <section className="relative mt-5 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#FF6B35] to-[#F4A261] text-white shadow-[0_22px_45px_rgba(255,107,53,0.28)]">
+    <section className="relative mt-5 overflow-hidden rounded-[30px] bg-[#D58B62] text-white shadow-[0_24px_50px_rgba(166,103,64,0.22)]">
       <div className="absolute inset-0">
         {heroImage ? (
           <img
@@ -36,22 +36,39 @@ async function HeroBanner() {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.32),_transparent_42%),linear-gradient(135deg,_#FF6B35,_#F4A261)]" />
+          <div className="h-full w-full bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.24),_transparent_34%),linear-gradient(135deg,_#B76439,_#E29A66)]" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B35]/92 via-[#FF6B35]/70 to-[#F4A261]/42" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#5A2D17]/76 via-[#8C4A27]/42 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/14 via-transparent to-white/8" />
       </div>
 
-      <div className="relative flex min-h-[196px] items-end justify-between gap-4 p-5">
-        <div className="max-w-[12rem]">
-          <p className="text-2xl font-extrabold leading-tight">🔥 Весенние туры</p>
-          <p className="mt-2 text-sm font-medium text-white/85">Скидки до 20%</p>
+      <div className="relative flex min-h-[210px] flex-col justify-between p-6">
+        <div className="inline-flex w-fit items-center rounded-full border border-white/20 bg-white/14 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/92 backdrop-blur-sm">
+          Spring selection
         </div>
-        <Link
-          href="/catalog"
-          className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-white/22 px-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/28"
-        >
-          Смотреть →
-        </Link>
+
+        <div className="mt-8 flex items-end justify-between gap-4">
+          <div className="max-w-[13.5rem]">
+            <p className="text-[2rem] font-extrabold leading-[0.95] tracking-[-0.04em]">
+              Весенние
+              <br />
+              туры
+            </p>
+            <p className="mt-3 text-sm font-medium text-white/82">
+              Скидки до 20% на самые яркие маршруты сезона
+            </p>
+          </div>
+
+          <div className="shrink-0 rounded-[26px] border border-white/18 bg-white/16 p-1.5 backdrop-blur-md">
+            <Link
+              href="/catalog"
+              className="inline-flex h-12 items-center justify-center rounded-[20px] bg-white px-5 text-sm font-semibold text-[#8B4A29] shadow-[0_8px_20px_rgba(255,255,255,0.18)] transition hover:bg-[#FFF7F1]"
+            >
+              Смотреть
+              <span className="ml-2 text-base">→</span>
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   )
