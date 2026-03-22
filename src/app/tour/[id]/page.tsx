@@ -22,7 +22,7 @@ type TourPageProps = {
   }>
 }
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 export default async function TourPage({ params }: TourPageProps) {
   const { id } = await params
