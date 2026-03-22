@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Compass, Heart, ClipboardList, User } from 'lucide-react'
+import { Compass, Heart, Map, User } from 'lucide-react'
 import { useKeyboardVisible } from '@/hooks/useKeyboardVisible'
 
-type TabbarItem = 'home' | 'catalog' | 'favorites' | 'bookings' | 'profile'
+type TabbarItem = 'home' | 'catalog' | 'favorites' | 'profile'
 
 type TabbarProps = {
   active?: TabbarItem
@@ -13,8 +13,8 @@ type TabbarProps = {
 
 const items = [
   { href: '/client', label: 'Главная', icon: Compass, key: 'home' as const },
+  { href: '/catalog', label: 'Каталог', icon: Map, key: 'catalog' as const },
   { href: '/favorites', label: 'Избранное', icon: Heart, key: 'favorites' as const },
-  { href: '/bookings', label: 'Заявки', icon: ClipboardList, key: 'bookings' as const },
   { href: '/profile', label: 'Профиль', icon: User, key: 'profile' as const },
 ]
 
@@ -28,15 +28,11 @@ export function Tabbar({ active }: TabbarProps) {
     active ??
     (pathname === '/favorites'
       ? 'favorites'
-      : pathname === '/bookings'
-        ? 'bookings'
-        : pathname === '/profile'
+      : pathname === '/catalog' || pathname.startsWith('/client/catalog')
+        ? 'catalog'
+      : pathname === '/profile'
           ? 'profile'
-          : pathname === '/client' ||
-              pathname.startsWith('/client/') ||
-              pathname === '/catalog' ||
-              pathname.startsWith('/tour/') ||
-              pathname.startsWith('/booking/')
+          : pathname === '/client' || pathname.startsWith('/client/')
             ? 'home'
             : undefined)
 
