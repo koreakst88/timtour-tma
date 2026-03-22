@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo } from 'react'
-import { BackHeader } from '@/components/layout/BackHeader'
+import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { getTelegramUser } from '@/lib/telegram'
 
 function InstagramIcon() {
@@ -97,6 +97,7 @@ const openExternal = (url: string) => {
 }
 
 export default function ProfilePage() {
+  useTelegramBackButton()
   const user = getTelegramUser()
 
   const fullName = useMemo(() => {
@@ -115,8 +116,6 @@ export default function ProfilePage() {
   return (
     <main className="page-transition min-h-screen bg-[#FAFAF8] pb-10 text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md">
-        <BackHeader title="Профиль" />
-
         <div className="px-4 pt-4">
           <section className="rounded-[24px] bg-white p-6 text-center shadow-[0_16px_32px_rgba(28,23,18,0.08)]">
             <div className="mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[#FFE7DD] text-2xl font-bold text-[#FF6B35]">

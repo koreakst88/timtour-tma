@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { BackHeader } from '@/components/layout/BackHeader'
+import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { supabase } from '@/lib/supabase'
 import type { Booking, Country, Tour, TourMedia } from '@/types'
 
@@ -36,6 +36,7 @@ const formatDate = (value: string) =>
   }).format(new Date(value))
 
 export default function BookingsPage() {
+  useTelegramBackButton()
   const [bookings, setBookings] = useState<BookingWithTour[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -60,8 +61,6 @@ export default function BookingsPage() {
   return (
     <main className="page-transition min-h-screen bg-[#FAFAF8] pb-10 text-[#1F1F1B]">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
-        <BackHeader title="Мои заявки" />
-
         {isLoading ? (
           <div className="flex flex-1 items-center justify-center px-4 py-20 text-sm font-medium text-[#6F6F68]">
             Загружаем заявки...

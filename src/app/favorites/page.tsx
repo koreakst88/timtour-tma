@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { BackHeader } from '@/components/layout/BackHeader'
+import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import TourCard from '@/components/tours/TourCard'
 import { supabase } from '@/lib/supabase'
 import type { Tour } from '@/types'
@@ -24,6 +24,7 @@ const readFavoriteIds = () => {
 }
 
 export default function FavoritesPage() {
+  useTelegramBackButton()
   const [favoriteIds, setFavoriteIds] = useState<string[]>([])
   const [tours, setTours] = useState<Tour[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -58,8 +59,6 @@ export default function FavoritesPage() {
   return (
     <main className="page-transition min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md pb-10">
-        <BackHeader title="Избранное" />
-
         {isLoading ? (
           <div className="flex h-64 items-center justify-center text-sm font-medium text-gray-500">
             Загружаем избранные туры...

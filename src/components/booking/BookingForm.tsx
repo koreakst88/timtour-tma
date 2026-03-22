@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { createBooking } from '@/app/actions/createBooking'
 import { getTelegramUser } from '@/lib/telegram'
 import type { Tour, TourDate } from '@/types'
@@ -28,6 +29,7 @@ const formatDateLabel = (d: TourDate) => {
 }
 
 export default function BookingForm({ tour }: Props) {
+  useTelegramBackButton()
   const [userName, setUserName] = useState('')
   const [phone, setPhone] = useState('')
   const [comment, setComment] = useState('')

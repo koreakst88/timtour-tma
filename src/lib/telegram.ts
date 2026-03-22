@@ -7,6 +7,12 @@ type TelegramWebApp = {
     user?: TelegramUser
   }
   openLink: (url: string) => void
+  BackButton: {
+    show: () => void
+    hide: () => void
+    onClick: (fn: () => void) => void
+    offClick: (fn: () => void) => void
+  }
 }
 
 declare global {

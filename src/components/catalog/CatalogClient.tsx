@@ -2,6 +2,7 @@
 
 import { Suspense, use, useState } from 'react'
 import { Search } from 'lucide-react'
+import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { SkeletonCard } from '@/components/shared/SkeletonCard'
 import TourCard from '@/components/tours/TourCard'
 import type { Country, Tour } from '@/types'
@@ -17,7 +18,10 @@ export default function CatalogClient({
   toursPromise,
   initialCountry,
 }: CatalogClientProps) {
-  const [activeCountry, setActiveCountry] = useState<string | null>(initialCountry ?? null)
+  useTelegramBackButton()
+  const [activeCountry, setActiveCountry] = useState<string | null>(
+    initialCountry ?? null,
+  )
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
