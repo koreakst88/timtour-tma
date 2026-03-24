@@ -16,6 +16,16 @@ type TourWithRelations = Tour & {
   country?: Country | null
 }
 
+function isKoreaTour(tour: TourWithRelations) {
+  const haystack = `${tour.title} ${tour.description ?? ''} ${tour.country?.name ?? ''}`.toLowerCase()
+  return haystack.includes('сеул') || haystack.includes('пусан') || haystack.includes('коре')
+}
+
+function isEnglishCampTour(tour: TourWithRelations) {
+  const haystack = `${tour.title} ${tour.description ?? ''}`.toLowerCase()
+  return haystack.includes('english camp')
+}
+
 async function getAllTours() {
   const { data, error } = await supabase
     .from('tours')
@@ -49,25 +59,13 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
   const [allTours, countries] = await Promise.all([getAllTours(), getCountries()])
 
-  const weekendTours = allTours.filter((tour) => {
-    if (tour.category) return tour.category === 'weekend'
+  const weekendTours = allTours.filter(isKoreaTour)
 
-    const countryName = tour.country?.name ?? ''
-    return countryName === 'Корея'
-  })
+  const internationalTours = allTours.filter(
+    (tour) => !isKoreaTour(tour) && !isEnglishCampTour(tour),
+  )
 
-  const internationalTours = allTours.filter((tour) => {
-    if (tour.category) return tour.category === 'international'
-
-    const countryName = tour.country?.name ?? ''
-    return countryName !== 'Корея' && !tour.title.toLowerCase().includes('english camp')
-  })
-
-  const englishCampTours = allTours.filter((tour) => {
-    if (tour.category) return tour.category === 'english_camp'
-
-    return tour.title.toLowerCase().includes('english camp')
-  })
+  const englishCampTours = allTours.filter(isEnglishCampTour)
 
   return (
     <main className="min-h-screen bg-[#FAFAF8] pb-24 page-transition">

@@ -13,8 +13,16 @@ type TourWithRelations = Tour & {
   country?: Country | null
 }
 
-function isMissingCategoryColumnError(error: { code?: string } | null) {
-  return error?.code === '42703'
+const preferredCountryNames = ['Малайзия', 'Вьетнам', 'Филиппины', 'Китай']
+
+function isKoreaTour(tour: TourWithRelations) {
+  const haystack = `${tour.title} ${tour.description ?? ''} ${tour.country?.name ?? ''}`.toLowerCase()
+  return tour.category === 'weekend' || haystack.includes('сеул') || haystack.includes('пусан') || haystack.includes('коре')
+}
+
+function isEnglishCampTour(tour: TourWithRelations) {
+  const haystack = `${tour.title} ${tour.description ?? ''}`.toLowerCase()
+  return tour.category === 'english_camp' || haystack.includes('english camp')
 }
 
 async function BannerSection() {
@@ -104,28 +112,16 @@ async function WeekendSection() {
   const { data, error } = await supabase
     .from('tours')
     .select('*, country:countries(*), media:tour_media(*)')
-    .eq('category', 'weekend')
     .eq('is_active', true)
-    .limit(6)
+    .order('created_at', { ascending: false })
 
-  let weekendTours = (data ?? []) as TourWithRelations[]
-
-  if (error && !isMissingCategoryColumnError(error)) {
+  if (error) {
     console.error('Failed to load weekend tours', error)
   }
 
-  if (error) {
-    const fallback = await supabase
-      .from('tours')
-      .select('*, country:countries(*), media:tour_media(*)')
-      .eq('is_active', true)
-      .limit(12)
-
-    const fallbackTours = (fallback.data ?? []) as TourWithRelations[]
-    weekendTours = fallbackTours
-      .filter((tour) => tour.country?.name === 'Корея')
-      .slice(0, 6)
-  }
+  const weekendTours = ((data ?? []) as TourWithRelations[])
+    .filter(isKoreaTour)
+    .slice(0, 6)
 
   if (weekendTours.length === 0) return null
 
@@ -159,9 +155,9 @@ async function CountriesSection() {
   }
 
   const countries = (data ?? []) as Country[]
-  const preferredOrder = ['Малайзия', 'Вьетнам', 'Таиланд', 'Филиппины']
+  const preferredOrder = preferredCountryNames
   const malaysiaFallback: Country = {
-    id: 'malaysia-fallback',
+    id: 'malaysia',
     name: 'Малайзия',
     flag_emoji: '🇲🇾',
     cover_url: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80',
@@ -199,34 +195,34 @@ async function CountriesSection() {
       <div className="grid grid-cols-2 gap-4">
         {displayCountries.map((country) => {
           const href =
-            country.id === 'malaysia-fallback'
-              ? '/catalog?tab=international'
+            country.id === 'malaysia'
+              ? '/catalog?tab=international&country=malaysia'
               : `/catalog?tab=international&country=${country.id}`
 
           return (
-          <Link
-            key={country.id}
-            href={href}
-            prefetch={true}
-            className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
-          >
-            <div className="relative h-full w-full">
-              {country.cover_url ? (
-                <img
-                  src={country.cover_url}
-                  alt={country.name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="h-full w-full bg-gradient-to-br from-[#FF6B35] to-[#F4A261]" />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <div className="absolute bottom-3 left-3 text-sm font-bold text-white">
-                {country.flag_emoji ? `${country.flag_emoji} ` : ''}
-                {country.name}
+            <Link
+              key={country.id}
+              href={href}
+              prefetch={true}
+              className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
+            >
+              <div className="relative h-full w-full">
+                {country.cover_url ? (
+                  <img
+                    src={country.cover_url}
+                    alt={country.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-gradient-to-br from-[#FF6B35] to-[#F4A261]" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute bottom-3 left-3 text-sm font-bold text-white">
+                  {country.flag_emoji ? `${country.flag_emoji} ` : ''}
+                  {country.name}
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
           )
         })}
       </div>
@@ -242,7 +238,7 @@ async function EnglishCampSection() {
     .eq('is_active', true)
     .limit(1)
 
-  if (error && !isMissingCategoryColumnError(error)) {
+  if (error) {
     console.error('Failed to load English Camp tours', error)
   }
 

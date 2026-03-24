@@ -25,6 +25,25 @@ function getInitialTab(value: string): CatalogTab {
   return tabs.some((tab) => tab.id === value) ? (value as CatalogTab) : 'weekend'
 }
 
+function isMalaysiaSpecialCountry(countryId: string | null) {
+  return countryId === 'malaysia'
+}
+
+function matchesSpecialCountry(tour: Tour, countryId: string, countries: Country[]) {
+  const selectedCountry = countries.find((country) => country.id === countryId)
+
+  if (selectedCountry) {
+    return tour.country_id === selectedCountry.id || tour.country?.name === selectedCountry.name
+  }
+
+  if (isMalaysiaSpecialCountry(countryId)) {
+    const haystack = `${tour.title} ${tour.description ?? ''} ${tour.country?.name ?? ''}`.toLowerCase()
+    return haystack.includes('малай') || haystack.includes('куала') || haystack.includes('лангкави') || haystack.includes('борнео')
+  }
+
+  return false
+}
+
 export default function CatalogClient({
   weekendTours,
   internationalTours,
@@ -52,7 +71,9 @@ export default function CatalogClient({
   }
 
   if (activeCountry) {
-    activeTours = activeTours.filter((tour) => tour.country_id === activeCountry)
+    activeTours = activeTours.filter((tour) =>
+      matchesSpecialCountry(tour, activeCountry, countries),
+    )
   }
 
   const normalizedQuery = searchQuery.trim().toLowerCase()
