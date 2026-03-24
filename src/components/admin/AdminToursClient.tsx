@@ -10,6 +10,21 @@ type TourWithCountry = Tour & {
   country?: Country | null
 }
 
+const categoryBadgeConfig = {
+  weekend: {
+    label: '🌸 Корея',
+    className: 'bg-emerald-50 text-emerald-700',
+  },
+  international: {
+    label: '🌍 За рубеж',
+    className: 'bg-sky-50 text-sky-700',
+  },
+  english_camp: {
+    label: '🎒 English Camp',
+    className: 'bg-purple-50 text-purple-700',
+  },
+} as const
+
 export default function AdminToursClient({ tours }: { tours: TourWithCountry[] }) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -40,6 +55,13 @@ export default function AdminToursClient({ tours }: { tours: TourWithCountry[] }
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-base font-extrabold text-[#1F1F1B]">{tour.title}</h2>
+              <span
+                className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-bold ${
+                  categoryBadgeConfig[tour.category ?? 'international'].className
+                }`}
+              >
+                {categoryBadgeConfig[tour.category ?? 'international'].label}
+              </span>
               <p className="mt-1 text-sm text-[#6F6F68]">
                 {tour.country?.flag_emoji ? `${tour.country.flag_emoji} ` : ''}
                 {tour.country?.name ?? 'Направление'}
