@@ -19,6 +19,7 @@ export type Tour = {
   price: string
   duration_days: number
   type: 'group' | 'individual'
+  category?: 'weekend' | 'international' | 'english_camp'
   is_active: boolean
   created_at: string
   media?: TourMedia[]
