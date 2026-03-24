@@ -37,7 +37,7 @@ export default function HomeScreen({ countries, popularTours }: HomeScreenProps)
             <input
               type="search"
               readOnly
-              onClick={() => router.push('/catalog')}
+              onClick={() => router.push('/catalog?tab=weekend')}
               placeholder="Поиск туров..."
               className="h-14 w-full cursor-pointer rounded-[20px] border border-white bg-white pl-12 pr-4 text-[15px] text-[#1F1F1B] shadow-[0_14px_35px_rgba(32,26,23,0.07)] outline-none transition placeholder:text-[#B3B2AA] focus:border-[#FF6B35]/30 focus:ring-4 focus:ring-[#FF6B35]/10"
             />
@@ -51,7 +51,7 @@ export default function HomeScreen({ countries, popularTours }: HomeScreenProps)
               <p className="mt-2 text-sm font-medium text-white/85">Скидки до 20%</p>
             </div>
             <Link
-              href="/catalog"
+              href="/catalog?tab=weekend"
               className="inline-flex h-11 items-center justify-center rounded-full bg-white/22 px-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/28"
             >
               Смотреть →
@@ -71,7 +71,7 @@ export default function HomeScreen({ countries, popularTours }: HomeScreenProps)
               {filteredCountries.map((country) => (
                 <Link
                   key={country.id}
-                  href={`/catalog?country=${country.id}`}
+                  href={`/catalog?tab=international&country=${country.id}`}
                   className="relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
                 >
                   <div className="relative h-full w-full">
@@ -103,7 +103,7 @@ export default function HomeScreen({ countries, popularTours }: HomeScreenProps)
         </section>
 
         <Link
-          href="/catalog"
+          href="/catalog?tab=international"
           className="mt-5 inline-flex h-14 w-full items-center justify-center rounded-[20px] border border-[#FF6B35] bg-transparent px-5 text-base font-bold text-[#FF6B35] transition hover:bg-[#FF6B35]/5"
         >
           Все направления →
@@ -112,7 +112,7 @@ export default function HomeScreen({ countries, popularTours }: HomeScreenProps)
         <section className="px-4 mt-6 mb-6">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-bold">🔥 Популярные туры</h2>
-            <Link href="/catalog" className="text-sm font-bold text-[#FF6B35]">
+            <Link href="/catalog?tab=weekend" className="text-sm font-bold text-[#FF6B35]">
               Все →
             </Link>
           </div>

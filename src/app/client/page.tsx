@@ -87,7 +87,7 @@ async function BannerSection() {
 
           <div className="shrink-0 rounded-[26px] border border-white/16 bg-white/14 p-1.5 backdrop-blur-md">
             <Link
-              href="/catalog"
+              href="/catalog?tab=weekend"
               className="inline-flex h-12 items-center justify-center rounded-[20px] bg-white px-5 text-sm font-semibold text-[#8B4A29] shadow-[0_8px_20px_rgba(255,255,255,0.16)] transition hover:bg-[#FFF7F1]"
             >
               Смотреть
@@ -199,7 +199,7 @@ async function CountriesSection() {
         {displayCountries.map((country) => (
           <Link
             key={country.id}
-            href={`/catalog?country=${country.id}`}
+            href={`/catalog?tab=international&country=${country.id}`}
             prefetch={true}
             className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
           >
@@ -288,7 +288,7 @@ async function EnglishCampSection() {
 function AllDirectionsButton() {
   return (
     <Link
-      href="/catalog"
+      href="/catalog?tab=international"
       className="mx-4 mt-6 mb-6 inline-flex h-14 w-[calc(100%-2rem)] items-center justify-center rounded-[20px] border border-[#FF6B35] bg-transparent px-5 text-base font-bold text-[#FF6B35] transition hover:bg-[#FF6B35]/5"
     >
       Все направления →

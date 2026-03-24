@@ -46,7 +46,7 @@ export default function CountriesGridClient({ countries }: CountriesGridClientPr
             {filteredCountries.map((country) => (
               <Link
                 key={country.id}
-                href={`/catalog?country=${country.id}`}
+                href={`/catalog?tab=international&country=${country.id}`}
                 prefetch={true}
                 className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
               >
@@ -79,7 +79,7 @@ export default function CountriesGridClient({ countries }: CountriesGridClientPr
       </section>
 
       <Link
-        href="/catalog"
+        href="/catalog?tab=international"
         className="mt-5 inline-flex h-14 w-full items-center justify-center rounded-[20px] border border-[#FF6B35] bg-transparent px-5 text-base font-bold text-[#FF6B35] transition hover:bg-[#FF6B35]/5"
       >
         Все направления →

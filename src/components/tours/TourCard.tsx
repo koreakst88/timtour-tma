@@ -28,7 +28,20 @@ export default function TourCard({ tour }: { tour: Tour }) {
 
     return () => window.clearInterval(interval)
   }, [images.length])
-  const typeLabel = tour.type === 'group' ? 'Групповой' : 'Индивидуальный'
+
+  const getBadge = () => {
+    if (tour.category === 'english_camp') {
+      return { text: '🎒 English Camp', color: 'bg-purple-500' }
+    }
+
+    if (tour.type === 'group') {
+      return { text: '👥 Групповой', color: 'bg-[#FF6B35]' }
+    }
+
+    return { text: '🧳 Индивидуальный', color: 'bg-gray-500' }
+  }
+
+  const badge = getBadge()
 
   return (
     <Link
@@ -60,8 +73,10 @@ export default function TourCard({ tour }: { tour: Tour }) {
           <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B35] via-[#FF8A5B] to-[#F4A261]" />
         )}
 
-        <div className="absolute left-4 top-4 inline-flex h-9 items-center rounded-full bg-white/92 px-3.5 text-xs font-bold text-[#FF6B35] backdrop-blur-sm">
-          {typeLabel}
+        <div
+          className={`absolute left-4 top-4 inline-flex h-9 items-center rounded-full px-3.5 text-xs font-bold text-white shadow-[0_10px_24px_rgba(17,17,17,0.16)] backdrop-blur-sm ${badge.color}`}
+        >
+          {badge.text}
         </div>
 
         <div className="absolute top-3 right-3 z-10">

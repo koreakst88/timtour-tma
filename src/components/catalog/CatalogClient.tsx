@@ -1,132 +1,156 @@
 'use client'
 
-import { Suspense, use, useState } from 'react'
-import { Search } from 'lucide-react'
-import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
-import { SkeletonCard } from '@/components/shared/SkeletonCard'
+import { useState } from 'react'
 import TourCard from '@/components/tours/TourCard'
 import type { Country, Tour } from '@/types'
 
+type CatalogTab = 'weekend' | 'international' | 'english_camp'
+
 type CatalogClientProps = {
+  weekendTours: Tour[]
+  internationalTours: Tour[]
+  englishCampTours: Tour[]
   countries: Country[]
-  toursPromise: Promise<Tour[]>
+  initialTab: string
   initialCountry?: string
 }
 
+const tabs: Array<{ id: CatalogTab; label: string }> = [
+  { id: 'weekend', label: '🌸 Корея' },
+  { id: 'international', label: '🌍 За рубеж' },
+  { id: 'english_camp', label: '🎒 English Camp' },
+]
+
+function getInitialTab(value: string): CatalogTab {
+  return tabs.some((tab) => tab.id === value) ? (value as CatalogTab) : 'weekend'
+}
+
 export default function CatalogClient({
+  weekendTours,
+  internationalTours,
+  englishCampTours,
   countries,
-  toursPromise,
+  initialTab,
   initialCountry,
 }: CatalogClientProps) {
-  useTelegramBackButton()
+  const [activeTab, setActiveTab] = useState<CatalogTab>(getInitialTab(initialTab))
   const [activeCountry, setActiveCountry] = useState<string | null>(
-    initialCountry ?? null,
+    getInitialTab(initialTab) === 'international' ? initialCountry ?? null : null,
   )
   const [searchQuery, setSearchQuery] = useState('')
 
+  const internationalCountries = countries.filter((country) => country.name !== 'Корея')
+
+  let activeTours: Tour[] = []
+
+  if (activeTab === 'weekend') {
+    activeTours = weekendTours
+  } else if (activeTab === 'international') {
+    activeTours = internationalTours
+  } else {
+    activeTours = englishCampTours
+  }
+
+  if (activeCountry) {
+    activeTours = activeTours.filter((tour) => tour.country_id === activeCountry)
+  }
+
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+
+  if (normalizedQuery) {
+    activeTours = activeTours.filter((tour) =>
+      tour.title.toLowerCase().includes(normalizedQuery),
+    )
+  }
+
+  const emptyStateEmoji =
+    activeTab === 'weekend' ? '🌸' : activeTab === 'international' ? '🌍' : '🎒'
+
   return (
-    <div className="page-transition w-full max-w-full overflow-x-hidden text-[#1F1F1B]">
-      <div className="mx-auto w-full max-w-md px-4">
-        <div className="sticky top-0 z-20 -mx-4 bg-[#FAFAF8] px-4 pt-3 pb-2 shadow-sm">
-          <label className="relative block">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#9B9B93]">
-              <Search className="h-5 w-5" />
-            </span>
+    <div className="mx-auto w-full max-w-md overflow-x-hidden text-[#1F1F1B]">
+      <div className="sticky top-0 z-20 bg-[#FAFAF8] pt-3 pb-2 shadow-[0_10px_24px_rgba(31,31,27,0.04)]">
+        <h1 className="mb-3 px-4 text-xl font-black text-gray-900">Все направления</h1>
+
+        <div className="mb-3 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex min-w-max gap-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(tab.id)
+                  setActiveCountry(null)
+                  setSearchQuery('')
+                }}
+                className={`rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-[#FF6B35] text-white shadow-md'
+                    : 'border border-gray-200 bg-white text-gray-500'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-2 px-4">
+          <div className="flex items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-sm">
+            <span className="text-gray-400">🔍</span>
             <input
-              type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder="Поиск туров..."
-              className="h-14 w-full rounded-[22px] border border-white bg-white pl-12 pr-4 text-[15px] shadow-[0_14px_35px_rgba(32,26,23,0.07)] outline-none transition placeholder:text-[#B3B2AA] focus:border-[#FF6B35]/30 focus:ring-4 focus:ring-[#FF6B35]/10"
+              className="flex-1 bg-transparent text-sm text-gray-700 outline-none"
             />
-          </label>
+          </div>
+        </div>
 
-          <div className="mt-3 -mx-4 overflow-x-auto px-4">
-            <div className="flex min-w-max gap-2.5 pb-1.5">
+        {activeTab === 'international' && (
+          <div className="overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex min-w-max gap-2">
               <button
                 type="button"
                 onClick={() => setActiveCountry(null)}
-                className={`inline-flex h-10 items-center justify-center rounded-full border px-4.5 text-sm font-bold whitespace-nowrap shadow-[0_6px_16px_rgba(32,26,23,0.04)] transition ${
-                  activeCountry === null
-                    ? 'border-[#FF6B35] bg-[#FF6B35] text-white shadow-[0_10px_24px_rgba(255,107,53,0.2)]'
-                    : 'border-[#FF6B35]/90 bg-white text-[#FF6B35]'
+                className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                  !activeCountry
+                    ? 'bg-[#FF6B35] text-white'
+                    : 'border border-[#FF6B35] bg-white text-[#FF6B35]'
                 }`}
               >
                 Все
               </button>
 
-              {countries.map((country) => {
-                const isActive = activeCountry === country.id
-
-                return (
-                  <button
-                    key={country.id}
-                    type="button"
-                    onClick={() => setActiveCountry(country.id)}
-                    className={`inline-flex h-10 items-center justify-center rounded-full border px-4.5 text-sm font-bold whitespace-nowrap shadow-[0_6px_16px_rgba(32,26,23,0.04)] transition ${
-                      isActive
-                        ? 'border-[#FF6B35] bg-[#FF6B35] text-white shadow-[0_10px_24px_rgba(255,107,53,0.2)]'
-                        : 'border-[#FF6B35]/90 bg-white text-[#FF6B35]'
-                    }`}
-                  >
-                    <span className="mr-2 text-base leading-none">{country.flag_emoji}</span>
-                    <span>{country.name}</span>
-                  </button>
-                )
-              })}
+              {internationalCountries.map((country) => (
+                <button
+                  key={country.id}
+                  type="button"
+                  onClick={() => setActiveCountry(country.id)}
+                  className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                    activeCountry === country.id
+                      ? 'bg-[#FF6B35] text-white'
+                      : 'border border-[#FF6B35] bg-white text-[#FF6B35]'
+                  }`}
+                >
+                  {country.flag_emoji ? `${country.flag_emoji} ` : ''}
+                  {country.name}
+                </button>
+              ))}
             </div>
           </div>
-        </div>
-
-        <Suspense
-          fallback={
-            <div className="w-full px-4 pb-6 pt-4">
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-            </div>
-          }
-        >
-          <ToursList
-            toursPromise={toursPromise}
-            activeCountry={activeCountry}
-            searchQuery={searchQuery}
-          />
-        </Suspense>
+        )}
       </div>
-    </div>
-  )
-}
 
-function ToursList({
-  toursPromise,
-  activeCountry,
-  searchQuery,
-}: {
-  toursPromise: Promise<Tour[]>
-  activeCountry: string | null
-  searchQuery: string
-}) {
-  const tours = use(toursPromise)
-  const normalizedSearch = searchQuery.trim().toLowerCase()
-
-  const filteredTours = tours.filter((tour) => {
-    const matchCountry = !activeCountry || tour.country_id === activeCountry
-    const matchSearch =
-      !normalizedSearch || tour.title.toLowerCase().includes(normalizedSearch)
-
-    return matchCountry && matchSearch
-  })
-
-  return (
-    <div className="w-full px-4 pb-8 pt-3">
-      {filteredTours.length > 0 ? (
-        filteredTours.map((tour) => <TourCard key={tour.id} tour={tour} />)
-      ) : (
-        <div className="rounded-[20px] bg-white px-5 py-10 text-center text-sm font-medium text-[#6F6F68] shadow-[0_14px_30px_rgba(32,26,23,0.06)]">
-          Туры не найдены 😔
-        </div>
-      )}
+      <div className="mt-3 space-y-4 px-4 pb-8">
+        {activeTours.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-16">
+            <span className="text-5xl">{emptyStateEmoji}</span>
+            <p className="font-medium text-gray-400">Туры не найдены</p>
+          </div>
+        ) : (
+          activeTours.map((tour) => <TourCard key={tour.id} tour={tour} />)
+        )}
+      </div>
     </div>
   )
 }

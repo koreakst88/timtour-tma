@@ -70,7 +70,7 @@ export default function BookingsPage() {
             <div className="text-5xl">📋</div>
             <p className="mt-5 text-lg font-bold text-[#1F1F1B]">У вас пока нет заявок</p>
             <Link
-              href="/catalog"
+              href="/catalog?tab=weekend"
               className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl bg-[#FF6B35] px-6 text-sm font-bold text-white shadow-[0_14px_24px_rgba(255,107,53,0.25)]"
             >
               Смотреть туры

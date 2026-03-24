@@ -13,7 +13,7 @@ type TabbarProps = {
 
 const items = [
   { href: '/client', label: 'Главная', icon: Compass, key: 'home' as const },
-  { href: '/catalog', label: 'Каталог', icon: Map, key: 'catalog' as const },
+  { href: '/catalog?tab=weekend', label: 'Каталог', icon: Map, key: 'catalog' as const },
   { href: '/favorites', label: 'Избранное', icon: Heart, key: 'favorites' as const },
   { href: '/profile', label: 'Профиль', icon: User, key: 'profile' as const },
 ]

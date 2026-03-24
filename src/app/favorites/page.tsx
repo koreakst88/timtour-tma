@@ -67,7 +67,7 @@ export default function FavoritesPage() {
           <div className="flex h-64 flex-col items-center justify-center gap-4 px-4">
             <span className="text-6xl">❤️</span>
             <p className="font-medium text-gray-500">Нет избранных туров</p>
-            <Link href="/catalog">
+            <Link href="/catalog?tab=weekend">
               <button className="rounded-xl bg-[#FF6B35] px-6 py-3 font-bold text-white">
                 Смотреть туры
               </button>
