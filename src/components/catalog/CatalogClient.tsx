@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import TourCard from '@/components/tours/TourCard'
 import type { Country, Tour } from '@/types'
 
@@ -57,6 +58,8 @@ export default function CatalogClient({
     getInitialTab(initialTab) === 'international' ? initialCountry ?? null : null,
   )
   const [searchQuery, setSearchQuery] = useState('')
+
+  useTelegramBackButton()
 
   const internationalCountries = countries.filter((country) => country.name !== 'Корея')
 

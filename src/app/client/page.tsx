@@ -14,6 +14,10 @@ type TourWithRelations = Tour & {
 }
 
 const preferredCountryNames = ['Малайзия', 'Вьетнам', 'Филиппины', 'Китай']
+const countryCoverFallbacks: Record<string, string> = {
+  Малайзия: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80',
+  Китай: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&q=80',
+}
 
 function isKoreaTour(tour: TourWithRelations) {
   const haystack = `${tour.title} ${tour.description ?? ''} ${tour.country?.name ?? ''}`.toLowerCase()
@@ -160,7 +164,7 @@ async function CountriesSection() {
     id: 'malaysia',
     name: 'Малайзия',
     flag_emoji: '🇲🇾',
-    cover_url: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80',
+    cover_url: countryCoverFallbacks['Малайзия'],
     is_priority: true,
     order: 0,
     is_active: true,
@@ -198,6 +202,7 @@ async function CountriesSection() {
             country.id === 'malaysia'
               ? '/catalog?tab=international&country=malaysia'
               : `/catalog?tab=international&country=${country.id}`
+          const coverUrl = country.cover_url || countryCoverFallbacks[country.name]
 
           return (
             <Link
@@ -207,9 +212,9 @@ async function CountriesSection() {
               className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
             >
               <div className="relative h-full w-full">
-                {country.cover_url ? (
+                {coverUrl ? (
                   <img
-                    src={country.cover_url}
+                    src={coverUrl}
                     alt={country.name}
                     className="h-full w-full object-cover"
                   />
