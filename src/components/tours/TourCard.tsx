@@ -31,14 +31,23 @@ export default function TourCard({ tour }: { tour: Tour }) {
 
   const getBadge = () => {
     if (tour.category === 'english_camp') {
-      return { text: '🎒 English Camp', color: 'bg-purple-500' }
+      return {
+        text: '🎒 English Camp',
+        className: 'border-white/60 bg-white/88 text-[#7C3AED]',
+      }
     }
 
     if (tour.type === 'group') {
-      return { text: '👥 Групповой', color: 'bg-[#FF6B35]' }
+      return {
+        text: '👥 Групповой',
+        className: 'border-white/60 bg-white/88 text-[#FF6B35]',
+      }
     }
 
-    return { text: '🧳 Индивидуальный', color: 'bg-gray-500' }
+    return {
+      text: '🧳 Индивидуальный',
+      className: 'border-white/60 bg-white/82 text-[#5F6C86]',
+    }
   }
 
   const badge = getBadge()
@@ -74,7 +83,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
         )}
 
         <div
-          className={`absolute left-4 top-4 inline-flex h-9 items-center rounded-full px-3.5 text-xs font-bold text-white shadow-[0_10px_24px_rgba(17,17,17,0.16)] backdrop-blur-sm ${badge.color}`}
+          className={`absolute left-4 top-4 inline-flex h-9 items-center rounded-full border px-3.5 text-xs font-bold shadow-[0_10px_24px_rgba(17,17,17,0.10)] backdrop-blur-md ${badge.className}`}
         >
           {badge.text}
         </div>
