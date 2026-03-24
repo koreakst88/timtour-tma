@@ -93,6 +93,16 @@ export default async function AdminEditTourPage({ params }: EditTourPageProps) {
             <option value="individual">Индивидуальный</option>
           </select>
 
+          <select
+            name="category"
+            defaultValue={tour.category ?? 'international'}
+            className="h-12 w-full rounded-[14px] border border-black/10 bg-white px-4 text-sm outline-none"
+          >
+            <option value="international">International (Стандарт)</option>
+            <option value="weekend">Weekend (Выходные)</option>
+            <option value="english_camp">English Camp (Лагерь)</option>
+          </select>
+
           <input
             name="photos"
             type="file"

@@ -84,6 +84,7 @@ export async function createTour(formData: FormData) {
   const price = String(formData.get('price') ?? '').trim()
   const durationDays = Number(formData.get('duration_days') ?? 0)
   const type = String(formData.get('type') ?? 'group')
+  const category = String(formData.get('category') ?? 'international')
   const photos = formData.getAll('photos').filter((item): item is File => item instanceof File)
 
   if (!title || !countryId || !description || !price || !durationDays) {
@@ -99,6 +100,7 @@ export async function createTour(formData: FormData) {
       price,
       duration_days: durationDays,
       type,
+      category,
       is_active: true,
     })
     .select('id')
@@ -124,6 +126,7 @@ export async function updateTour(tourId: string, formData: FormData) {
   const price = String(formData.get('price') ?? '').trim()
   const durationDays = Number(formData.get('duration_days') ?? 0)
   const type = String(formData.get('type') ?? 'group')
+  const category = String(formData.get('category') ?? 'international')
   const photos = formData.getAll('photos').filter((item): item is File => item instanceof File)
 
   await supabase
@@ -135,6 +138,7 @@ export async function updateTour(tourId: string, formData: FormData) {
       price,
       duration_days: durationDays,
       type,
+      category,
     })
     .eq('id', tourId)
 
