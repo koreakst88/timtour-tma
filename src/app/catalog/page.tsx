@@ -16,81 +16,18 @@ type TourWithRelations = Tour & {
   country?: Country | null
 }
 
-function isMissingCategoryColumnError(error: { code?: string } | null) {
-  return error?.code === '42703'
-}
-
-async function getWeekendTours() {
-  const result = await supabase
-    .from('tours')
-    .select('*, country:countries(*), media:tour_media(*)')
-    .eq('category', 'weekend')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
-
-  if (!result.error) {
-    return (result.data ?? []) as TourWithRelations[]
-  }
-
-  if (!isMissingCategoryColumnError(result.error)) {
-    console.error('Failed to load weekend tours', result.error)
-  }
-
-  const fallback = await supabase
+async function getAllTours() {
+  const { data, error } = await supabase
     .from('tours')
     .select('*, country:countries(*), media:tour_media(*)')
     .eq('is_active', true)
     .order('created_at', { ascending: false })
 
-  return ((fallback.data ?? []) as TourWithRelations[]).filter(
-    (tour) => tour.country?.name === 'Корея',
-  )
-}
-
-async function getInternationalTours() {
-  const result = await supabase
-    .from('tours')
-    .select('*, country:countries(*), media:tour_media(*)')
-    .eq('category', 'international')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
-
-  if (!result.error) {
-    return (result.data ?? []) as TourWithRelations[]
+  if (error) {
+    console.error('Failed to load catalog tours', error)
   }
 
-  if (!isMissingCategoryColumnError(result.error)) {
-    console.error('Failed to load international tours', result.error)
-  }
-
-  const fallback = await supabase
-    .from('tours')
-    .select('*, country:countries(*), media:tour_media(*)')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
-
-  return ((fallback.data ?? []) as TourWithRelations[]).filter(
-    (tour) => tour.country?.name && tour.country.name !== 'Корея',
-  )
-}
-
-async function getEnglishCampTours() {
-  const result = await supabase
-    .from('tours')
-    .select('*, country:countries(*), media:tour_media(*)')
-    .eq('category', 'english_camp')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
-
-  if (!result.error) {
-    return (result.data ?? []) as TourWithRelations[]
-  }
-
-  if (!isMissingCategoryColumnError(result.error)) {
-    console.error('Failed to load English Camp tours', result.error)
-  }
-
-  return [] as TourWithRelations[]
+  return (data ?? []) as TourWithRelations[]
 }
 
 async function getCountries() {
@@ -110,12 +47,27 @@ async function getCountries() {
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const resolvedSearchParams = await searchParams
 
-  const [weekendTours, internationalTours, englishCampTours, countries] = await Promise.all([
-    getWeekendTours(),
-    getInternationalTours(),
-    getEnglishCampTours(),
-    getCountries(),
-  ])
+  const [allTours, countries] = await Promise.all([getAllTours(), getCountries()])
+
+  const weekendTours = allTours.filter((tour) => {
+    if (tour.category) return tour.category === 'weekend'
+
+    const countryName = tour.country?.name ?? ''
+    return countryName === 'Корея'
+  })
+
+  const internationalTours = allTours.filter((tour) => {
+    if (tour.category) return tour.category === 'international'
+
+    const countryName = tour.country?.name ?? ''
+    return countryName !== 'Корея' && !tour.title.toLowerCase().includes('english camp')
+  })
+
+  const englishCampTours = allTours.filter((tour) => {
+    if (tour.category) return tour.category === 'english_camp'
+
+    return tour.title.toLowerCase().includes('english camp')
+  })
 
   return (
     <main className="min-h-screen bg-[#FAFAF8] pb-24 page-transition">

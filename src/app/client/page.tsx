@@ -148,42 +148,43 @@ async function WeekendSection() {
 }
 
 async function CountriesSection() {
-  const priorityResult = await supabase
+  const { data, error } = await supabase
     .from('countries')
     .select('*')
-    .eq('is_priority', true)
     .eq('is_active', true)
     .order('order')
 
-  if (priorityResult.error) {
-    console.error('Failed to load priority countries', priorityResult.error)
+  if (error) {
+    console.error('Failed to load countries', error)
   }
 
-  let countries = (priorityResult.data ?? []) as Country[]
-
-  if (countries.length === 0) {
-    const fallbackResult = await supabase
-      .from('countries')
-      .select('*')
-      .eq('is_active', true)
-      .order('order')
-
-    if (fallbackResult.error) {
-      console.error('Failed to load countries fallback', fallbackResult.error)
-    }
-
-    countries = (fallbackResult.data ?? []) as Country[]
-  }
-
+  const countries = (data ?? []) as Country[]
   const preferredOrder = ['Малайзия', 'Вьетнам', 'Таиланд', 'Филиппины']
+  const malaysiaFallback: Country = {
+    id: 'malaysia-fallback',
+    name: 'Малайзия',
+    flag_emoji: '🇲🇾',
+    cover_url: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80',
+    is_priority: true,
+    order: 0,
+    is_active: true,
+  }
 
   const preferredCountries = preferredOrder
-    .map((name) => countries.find((country) => country.name === name))
+    .map((name) => {
+      const foundCountry = countries.find((country) => country.name === name)
+
+      if (foundCountry) return foundCountry
+
+      if (name === 'Малайзия') return malaysiaFallback
+
+      return null
+    })
     .filter(Boolean) as Country[]
 
-  const fallbackCountries = countries
-    .filter((country) => country.is_priority && !preferredOrder.includes(country.name))
-    .sort((left, right) => left.order - right.order)
+  const fallbackCountries = countries.filter(
+    (country) => !preferredOrder.includes(country.name),
+  )
 
   const displayCountries = [...preferredCountries, ...fallbackCountries].slice(0, 4)
 
@@ -196,10 +197,16 @@ async function CountriesSection() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {displayCountries.map((country) => (
+        {displayCountries.map((country) => {
+          const href =
+            country.id === 'malaysia-fallback'
+              ? '/catalog?tab=international'
+              : `/catalog?tab=international&country=${country.id}`
+
+          return (
           <Link
             key={country.id}
-            href={`/catalog?tab=international&country=${country.id}`}
+            href={href}
             prefetch={true}
             className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
           >
@@ -220,7 +227,8 @@ async function CountriesSection() {
               </div>
             </div>
           </Link>
-        ))}
+          )
+        })}
       </div>
     </section>
   )
