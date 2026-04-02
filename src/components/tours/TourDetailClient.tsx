@@ -70,21 +70,6 @@ export function TourDetailClient({ tour, dates, reviews, averageRating }: TourDe
       <div className="relative z-10 -mt-6 rounded-t-3xl bg-white px-5 pb-36 pt-5">
         {canSwitchMode ? <TourModeSwitcher mode={mode} onChange={setMode} /> : null}
 
-        {canSwitchMode ? (
-          <div className="mb-4 flex">
-            <span
-              className={[
-                'rounded-full px-3 py-1 text-sm font-semibold',
-                isIndividualMode
-                  ? 'bg-[#1F1F1B] text-white'
-                  : 'bg-[#FF6B35]/10 text-[#FF6B35]',
-              ].join(' ')}
-            >
-              {isIndividualMode ? 'Сейчас выбран индивидуальный режим' : 'Сейчас выбран групповой режим'}
-            </span>
-          </div>
-        ) : null}
-
         {!canSwitchMode ? (
           <div className="mb-3">
             <span className="rounded-full bg-[#FF6B35]/10 px-3 py-1 text-sm font-semibold text-[#FF6B35]">

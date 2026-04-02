@@ -9,7 +9,7 @@ type TourModeSwitcherProps = {
 
 export default function TourModeSwitcher({ mode, onChange }: TourModeSwitcherProps) {
   return (
-    <div className="mb-5 rounded-[24px] border border-[#FF6B35]/10 bg-[#FFF8F3] p-1.5 shadow-[0_10px_24px_rgba(32,26,23,0.04)]">
+    <div className="mb-4 rounded-[20px] border border-[#FF6B35]/10 bg-[#FFF8F3] p-1 shadow-[0_8px_18px_rgba(32,26,23,0.04)]">
       <div className="grid grid-cols-2 gap-1">
         {[
           { id: 'group' as const, label: '👥 Групповой' },
@@ -24,7 +24,7 @@ export default function TourModeSwitcher({ mode, onChange }: TourModeSwitcherPro
               onClick={() => onChange(item.id)}
               aria-pressed={isActive}
               className={[
-                'rounded-[18px] px-4 py-3 text-sm font-bold transition-all duration-200',
+                'rounded-[16px] px-3 py-2.5 text-[13px] font-bold transition-all duration-200',
                 isActive
                   ? 'bg-white text-[#1F1F1B] ring-1 ring-[#FF6B35]/12 shadow-[0_10px_24px_rgba(25,20,16,0.08)]'
                   : 'text-[#7A766D]',
