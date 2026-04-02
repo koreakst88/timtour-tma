@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { ADMIN_TG_COOKIE } from '@/lib/admin-constants'
 import { supabase } from '@/lib/supabase'
+import { notifyManagerAboutReview } from '@/lib/telegram-notifications'
 
 type SubmitReviewInput = {
   tourId: string
@@ -78,30 +79,11 @@ export async function submitReview(data: SubmitReviewInput): Promise<SubmitRevie
     }
   }
 
-  const managerChatId = process.env.MANAGER_TG_ID
-  const botToken = process.env.BOT_TOKEN
-
-  if (managerChatId && botToken) {
-    const stars = '★'.repeat(data.rating) + '☆'.repeat(5 - data.rating)
-    const message = `
-Новый отзыв на тур "${data.tourTitle}"
-Оценка: ${stars}
-Текст: ${reviewText}
-    `.trim()
-
-    try {
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: managerChatId,
-          text: message,
-        }),
-      })
-    } catch {
-      console.error('Failed to notify manager about review')
-    }
-  }
+  await notifyManagerAboutReview({
+    tourTitle: data.tourTitle,
+    rating: data.rating,
+    text: reviewText,
+  })
 
   revalidatePath(`/tour/${data.tourId}`)
   revalidatePath('/admin')

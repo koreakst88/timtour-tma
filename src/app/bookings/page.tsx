@@ -26,6 +26,10 @@ const statusConfig = {
     label: '✅ Подтверждена',
     color: '#10B981',
   },
+  rejected: {
+    label: '❌ Отклонена',
+    color: '#EF4444',
+  },
 } as const
 
 const formatDate = (value: string) =>

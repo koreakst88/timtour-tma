@@ -72,7 +72,7 @@ export type Booking = {
   comment?: string
   travel_date: string
   people_count: number
-  status: 'new' | 'processing' | 'confirmed'
+  status: 'new' | 'processing' | 'confirmed' | 'rejected'
   created_at: string
 }
 

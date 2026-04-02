@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireAdminAccess } from '@/lib/admin'
 import { supabase } from '@/lib/supabase'
+import { notifyBookingStatusChanged } from '@/lib/telegram-notifications'
 
 type ProgramPayload = {
   day_number: number
@@ -15,7 +16,32 @@ type ProgramPayload = {
 export async function updateBookingStatus(bookingId: string, status: string) {
   await requireAdminAccess()
 
+  const { data: booking } = await supabase
+    .from('bookings')
+    .select('id, status, user_tg_id, user_name, travel_date, tour:tours(title)')
+    .eq('id', bookingId)
+    .maybeSingle()
+
+  if (!booking || booking.status === status) {
+    revalidatePath('/admin')
+    revalidatePath('/admin/bookings')
+    return
+  }
+
   await supabase.from('bookings').update({ status }).eq('id', bookingId)
+
+  if (status === 'processing' || status === 'confirmed' || status === 'rejected') {
+    const rawTour = booking.tour as { title?: string } | { title?: string }[] | null | undefined
+    const tourTitle = Array.isArray(rawTour) ? rawTour[0]?.title : rawTour?.title
+
+    await notifyBookingStatusChanged({
+      userTgId: booking.user_tg_id,
+      userName: booking.user_name,
+      tourTitle,
+      travelDate: booking.travel_date,
+      status,
+    })
+  }
 
   revalidatePath('/admin')
   revalidatePath('/admin/bookings')

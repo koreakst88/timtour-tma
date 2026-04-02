@@ -11,19 +11,21 @@ type BookingWithRelations = Booking & {
   }) | null
 }
 
-type StatusFilter = 'all' | 'new' | 'processing' | 'confirmed'
+type StatusFilter = 'all' | 'new' | 'processing' | 'confirmed' | 'rejected'
 
 const statusOptions: { value: StatusFilter; label: string }[] = [
   { value: 'all', label: 'Все' },
   { value: 'new', label: 'Новые' },
   { value: 'processing', label: 'В обработке' },
   { value: 'confirmed', label: 'Подтверждены' },
+  { value: 'rejected', label: 'Отклонены' },
 ]
 
 const statusStyles = {
   new: { label: '🆕 Новая', className: 'text-[#FF6B35]' },
   processing: { label: '🔄 В обработке', className: 'text-[#3B82F6]' },
   confirmed: { label: '✅ Подтверждена', className: 'text-[#10B981]' },
+  rejected: { label: '❌ Отклонена', className: 'text-[#EF4444]' },
 } as const
 
 const formatDate = (value: string) =>
@@ -48,7 +50,7 @@ export default function AdminBookingsClient({
     )
   }, [activeFilter, bookings])
 
-  const handleStatusChange = (bookingId: string, status: 'processing' | 'confirmed') => {
+  const handleStatusChange = (bookingId: string, status: 'processing' | 'confirmed' | 'rejected') => {
     startTransition(async () => {
       await updateBookingStatus(bookingId, status)
       router.refresh()
@@ -126,6 +128,14 @@ export default function AdminBookingsClient({
                   className="rounded-xl bg-[#ECFDF5] px-3 py-2 text-xs font-bold text-[#10B981]"
                 >
                   Подтвердить
+                </button>
+                <button
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => handleStatusChange(booking.id, 'rejected')}
+                  className="rounded-xl bg-[#FEF2F2] px-3 py-2 text-xs font-bold text-[#EF4444]"
+                >
+                  Отклонить
                 </button>
                 <a
                   href={`tg://user?id=${booking.user_tg_id}`}
