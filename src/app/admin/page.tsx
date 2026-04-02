@@ -100,6 +100,12 @@ export default async function AdminPage() {
             >
               📊 Аналитика
             </Link>
+            <Link
+              href="/admin/reviews"
+              className="rounded-[16px] border border-[#FF6B35]/20 bg-white px-4 py-4 text-sm font-bold text-[#FF6B35]"
+            >
+              ⭐ Отзывы
+            </Link>
           </section>
         </div>
       </div>

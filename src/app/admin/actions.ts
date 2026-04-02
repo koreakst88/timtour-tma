@@ -21,6 +21,18 @@ export async function updateBookingStatus(bookingId: string, status: string) {
   revalidatePath('/admin/bookings')
 }
 
+export async function updateReviewVisibility(reviewId: string, isVisible: boolean) {
+  await requireAdminAccess()
+
+  await supabase
+    .from('reviews')
+    .update({ is_visible: isVisible })
+    .eq('id', reviewId)
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/reviews')
+}
+
 export async function toggleTourVisibility(tourId: string) {
   await requireAdminAccess()
 

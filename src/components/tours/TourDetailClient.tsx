@@ -8,6 +8,7 @@ import TourDates from '@/components/tours/TourDates'
 import TourHighlights from '@/components/tours/TourHighlights'
 import TourMediaGallery from '@/components/tours/TourMediaGallery'
 import TourModeSwitcher from '@/components/tours/TourModeSwitcher'
+import TourReviewsSection from '@/components/tours/TourReviewsSection'
 import TourTextAccordion from '@/components/tours/TourTextAccordion'
 import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import type { Country, Review, Tour, TourDate, TourMedia, TourProgramDay } from '@/types'
@@ -25,6 +26,7 @@ type TourDetailClientProps = {
   dates: TourDate[]
   reviews: Review[]
   averageRating: string | null
+  canReview: boolean
 }
 
 type TourMode = 'group' | 'individual'
@@ -32,17 +34,15 @@ type TourMode = 'group' | 'individual'
 const INDIVIDUAL_FALLBACK =
   'Мы подберём маршрут под ваши даты, бюджет и формат отдыха.'
 
-const formatReviewDate = (value: string) =>
-  new Intl.DateTimeFormat('ru-RU', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(value))
-
-export function TourDetailClient({ tour, dates, reviews, averageRating }: TourDetailClientProps) {
+export function TourDetailClient({
+  tour,
+  dates,
+  reviews,
+  averageRating,
+  canReview,
+}: TourDetailClientProps) {
   useTelegramBackButton()
 
-  const previewReviews = reviews.slice(0, 3)
   const canSwitchMode = Boolean(tour.has_individual)
   const [mode, setMode] = useState<TourMode>(
     canSwitchMode ? 'group' : tour.type === 'individual' ? 'individual' : 'group',
@@ -141,45 +141,13 @@ export function TourDetailClient({ tour, dates, reviews, averageRating }: TourDe
           </div>
         </div>
 
-        <div className="mb-6">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-bold text-gray-900">Отзывы</h2>
-            <span className="text-sm font-semibold text-yellow-500">
-              {averageRating ? `⭐ ${averageRating}` : '⭐ Нет оценок'}
-            </span>
-          </div>
-
-          {previewReviews.length > 0 ? (
-            <div className="space-y-3">
-              {previewReviews.map((review) => (
-                <article key={review.id} className="rounded-2xl bg-gray-50 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">{review.user_name}</p>
-                      <p className="mt-0.5 text-xs text-[#FF6B35]">
-                        {'★'.repeat(review.rating)}
-                        <span className="text-gray-200">{'★'.repeat(5 - review.rating)}</span>
-                      </p>
-                    </div>
-                    <span className="shrink-0 text-xs text-gray-400">{formatReviewDate(review.created_at)}</span>
-                  </div>
-                  <p className="mt-2 text-sm leading-relaxed text-gray-600">{review.text}</p>
-                </article>
-              ))}
-
-              {reviews.length > 3 ? (
-                <button
-                  type="button"
-                  className="w-full rounded-2xl border border-[#FF6B35] px-4 py-3 text-sm font-bold text-[#FF6B35] transition-transform active:scale-95"
-                >
-                  Показать все отзывы ({reviews.length})
-                </button>
-              ) : null}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-400">Будьте первым кто оставит отзыв ✍️</p>
-          )}
-        </div>
+        <TourReviewsSection
+          tourId={tour.id}
+          tourTitle={tour.title}
+          reviews={reviews}
+          averageRating={averageRating}
+          canReview={canReview}
+        />
 
         <div className="space-y-4">
           {tour.booking_terms?.trim() ? (
