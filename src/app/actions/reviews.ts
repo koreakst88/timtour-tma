@@ -79,10 +79,22 @@ export async function submitReview(data: SubmitReviewInput): Promise<SubmitRevie
     }
   }
 
-  await notifyManagerAboutReview({
+  console.log('[reviews] sending admin notification', {
+    tourId: data.tourId,
     tourTitle: data.tourTitle,
     rating: data.rating,
     text: reviewText,
+  })
+
+  const notificationResult = await notifyManagerAboutReview({
+    tourTitle: data.tourTitle,
+    rating: data.rating,
+    text: reviewText,
+  })
+
+  console.log('[reviews] telegram result', {
+    tourId: data.tourId,
+    notificationResult: notificationResult ?? null,
   })
 
   revalidatePath(`/tour/${data.tourId}`)

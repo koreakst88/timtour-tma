@@ -5,6 +5,12 @@ type SendTelegramMessageOptions = {
   parse_mode?: 'HTML' | 'Markdown'
 }
 
+type TelegramSendResult = {
+  ok: boolean
+  status: 'sent' | 'skipped' | 'failed'
+  details?: string
+}
+
 type BookingNotificationPayload = {
   userTgId?: string | null
   userName?: string | null
@@ -57,13 +63,29 @@ export async function sendTelegramMessage(
   chatId: string,
   text: string,
   options?: SendTelegramMessageOptions,
-) {
-  const botToken = process.env.BOT_TOKEN
+) : Promise<TelegramSendResult> {
+  const botToken = process.env.BOT_TOKEN ?? process.env.TELEGRAM_BOT_TOKEN
 
-  if (!botToken || !chatId) return
+  if (!chatId) {
+    console.warn('[telegram] skipped: missing chat id')
+    return {
+      ok: false,
+      status: 'skipped',
+      details: 'missing chat id',
+    }
+  }
+
+  if (!botToken) {
+    console.warn('[telegram] skipped: missing bot token in Vercel env')
+    return {
+      ok: false,
+      status: 'skipped',
+      details: 'missing bot token',
+    }
+  }
 
   try {
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -72,8 +94,34 @@ export async function sendTelegramMessage(
         ...options,
       }),
     })
+
+    const responseText = await response.text()
+    console.log('[telegram] api response', {
+      chatId,
+      httpStatus: response.status,
+      body: responseText,
+    })
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        status: 'failed',
+        details: responseText,
+      }
+    }
+
+    return {
+      ok: true,
+      status: 'sent',
+      details: responseText,
+    }
   } catch (error) {
     console.error('Failed to send Telegram message', error)
+    return {
+      ok: false,
+      status: 'failed',
+      details: error instanceof Error ? error.message : 'unknown error',
+    }
   }
 }
 
@@ -106,7 +154,7 @@ export async function notifyBookingStatusChanged(payload: BookingNotificationPay
 
   if (!message) return
 
-  await sendTelegramMessage(payload.userTgId, message)
+  return sendTelegramMessage(payload.userTgId, message)
 }
 
 export async function notifyManagerAboutReview(payload: ReviewNotificationPayload) {
@@ -116,5 +164,5 @@ export async function notifyManagerAboutReview(payload: ReviewNotificationPayloa
   const stars = '★'.repeat(payload.rating) + '☆'.repeat(5 - payload.rating)
   const message = `⭐ Новый отзыв на тур "${payload.tourTitle}"\nОценка: ${stars}\nТекст: ${payload.text}`
 
-  await sendTelegramMessage(managerChatId, message)
+  return sendTelegramMessage(managerChatId, message)
 }

@@ -23,23 +23,58 @@ export async function updateBookingStatus(bookingId: string, status: string) {
     .maybeSingle()
 
   if (!booking || booking.status === status) {
+    console.log('[booking-status] skipped', {
+      bookingId,
+      reason: !booking ? 'booking not found' : 'status did not change',
+      oldStatus: booking?.status ?? null,
+      newStatus: status,
+    })
     revalidatePath('/admin')
     revalidatePath('/admin/bookings')
     return
   }
+
+  console.log('[booking-status] updating', {
+    bookingId,
+    oldStatus: booking.status,
+    newStatus: status,
+    userTgId: booking.user_tg_id,
+  })
 
   await supabase.from('bookings').update({ status }).eq('id', bookingId)
 
   if (status === 'processing' || status === 'confirmed' || status === 'rejected') {
     const rawTour = booking.tour as { title?: string } | { title?: string }[] | null | undefined
     const tourTitle = Array.isArray(rawTour) ? rawTour[0]?.title : rawTour?.title
+    const notificationPreview =
+      status === 'processing'
+        ? `🔄 ${booking.user_name ? `${booking.user_name}, ` : ''}ваша заявка в обработке.\nМенеджер свяжется с вами в ближайшее время.`
+        : status === 'confirmed'
+          ? `✅ ${booking.user_name ? `${booking.user_name}, ` : ''}заявка подтверждена!\n✈️ Тур: ${tourTitle ?? 'Тур'}${booking.travel_date ? `\n📅 Дата: ${booking.travel_date}` : ''}\nПо вопросам: @TimTour_WW`
+          : `❌ ${booking.user_name ? `${booking.user_name}, ` : ''}к сожалению тур недоступен.\nМы предложим альтернативу. @TimTour_WW`
 
-    await notifyBookingStatusChanged({
+    console.log('[booking-status] sending telegram notification', {
+      bookingId,
+      oldStatus: booking.status,
+      newStatus: status,
+      userTgId: booking.user_tg_id,
+      text: notificationPreview,
+    })
+
+    const notificationResult = await notifyBookingStatusChanged({
       userTgId: booking.user_tg_id,
       userName: booking.user_name,
       tourTitle,
       travelDate: booking.travel_date,
       status,
+    })
+
+    console.log('[booking-status] telegram result', {
+      bookingId,
+      oldStatus: booking.status,
+      newStatus: status,
+      userTgId: booking.user_tg_id,
+      result: notificationResult ?? null,
     })
   }
 
