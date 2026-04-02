@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { createBooking } from '@/app/actions/createBooking'
 import { getTelegramUser } from '@/lib/telegram'
@@ -322,6 +322,11 @@ export default function BookingForm({ tour, initialComment }: Props) {
             >
               Комментарий
             </label>
+            {initialComment ? (
+              <p className="mb-2 text-xs font-medium text-[#FF6B35]">
+                Комментарий подставлен автоматически, его можно отредактировать.
+              </p>
+            ) : null}
             <textarea
               id="booking-comment"
               value={comment}

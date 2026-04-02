@@ -11,21 +11,25 @@ export default function TourHighlights({ highlights }: TourHighlightsProps) {
 
   if (highlights.length === 0) return null
 
-  const visibleHighlights = isExpanded ? highlights : highlights.slice(0, 6)
-  const canExpand = highlights.length > 6
+  const visibleHighlights = isExpanded ? highlights : highlights.slice(0, 4)
+  const canExpand = highlights.length > 4
 
   return (
-    <section className="mb-6 rounded-[24px] bg-[#FAFAF8] p-5 ring-1 ring-black/5">
-      <h2 className="text-lg font-extrabold text-[#1F1F1B]">Что вы увидите</h2>
+    <section className="mb-6 rounded-[24px] border border-black/5 bg-[#FFFDF9] p-5 shadow-[0_12px_28px_rgba(32,26,23,0.04)]">
+      <div className="flex items-center gap-2">
+        <span className="rounded-full bg-[#FFF1E8] px-2.5 py-1 text-xs font-bold text-[#FF6B35]">
+          Что вы увидите
+        </span>
+      </div>
 
-      <div className="mt-4 space-y-2.5">
+      <div className="mt-4 space-y-2">
         {visibleHighlights.map((item) => (
           <div
             key={item}
-            className="flex items-start gap-3 rounded-[18px] bg-white px-4 py-3 shadow-[0_8px_20px_rgba(32,26,23,0.04)]"
+            className="flex items-start gap-3 rounded-[16px] bg-[#FAFAF8] px-3.5 py-3 ring-1 ring-black/5"
           >
-            <span className="text-base leading-none">📍</span>
-            <p className="text-sm font-medium leading-6 text-[#4F4E49]">{item}</p>
+            <span className="mt-0.5 text-sm leading-none">📍</span>
+            <p className="text-sm font-medium leading-5 break-words text-[#4F4E49]">{item}</p>
           </div>
         ))}
       </div>

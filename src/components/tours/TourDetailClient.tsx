@@ -70,6 +70,21 @@ export function TourDetailClient({ tour, dates, reviews, averageRating }: TourDe
       <div className="relative z-10 -mt-6 rounded-t-3xl bg-white px-5 pb-36 pt-5">
         {canSwitchMode ? <TourModeSwitcher mode={mode} onChange={setMode} /> : null}
 
+        {canSwitchMode ? (
+          <div className="mb-4 flex">
+            <span
+              className={[
+                'rounded-full px-3 py-1 text-sm font-semibold',
+                isIndividualMode
+                  ? 'bg-[#1F1F1B] text-white'
+                  : 'bg-[#FF6B35]/10 text-[#FF6B35]',
+              ].join(' ')}
+            >
+              {isIndividualMode ? 'Сейчас выбран индивидуальный режим' : 'Сейчас выбран групповой режим'}
+            </span>
+          </div>
+        ) : null}
+
         {!canSwitchMode ? (
           <div className="mb-3">
             <span className="rounded-full bg-[#FF6B35]/10 px-3 py-1 text-sm font-semibold text-[#FF6B35]">
@@ -200,22 +215,22 @@ export function TourDetailClient({ tour, dates, reviews, averageRating }: TourDe
             </p>
             {isIndividualMode ? (
               <>
-                <p className="text-base font-black leading-tight text-[#1F1F1B]">
+                <p className="text-sm font-bold leading-tight text-[#1F1F1B]">
                   Стоимость рассчитывается
                 </p>
                 {tour.individual_price_from ? (
-                  <p className="mt-1 text-sm font-bold text-[#FF6B35]">{tour.individual_price_from}</p>
+                  <p className="mt-1 text-xs font-semibold text-[#FF6B35]">{tour.individual_price_from}</p>
                 ) : null}
               </>
             ) : (
-              <p className="text-2xl font-black leading-none text-[#FF6B35]">{tour.price}</p>
+              <p className="text-lg font-bold leading-none text-[#1F1F1B]">{tour.price}</p>
             )}
           </div>
 
           <Link href={ctaHref}>
             <button
               type="button"
-              className="rounded-2xl bg-[#FF6B35] px-6 py-4 text-base font-bold text-white shadow-lg shadow-[#FF6B35]/30 transition-transform active:scale-95"
+              className="rounded-2xl bg-[#FF6B35] px-6 py-4 text-base font-bold text-white shadow-lg shadow-[#FF6B35]/30 transition-transform active:scale-95 min-w-[190px]"
             >
               {isIndividualMode ? 'Узнать стоимость 💬' : 'Забронировать ✈️'}
             </button>
