@@ -20,10 +20,25 @@ export type Tour = {
   duration_days: number
   type: 'group' | 'individual'
   category?: 'weekend' | 'international' | 'english_camp'
+  has_individual?: boolean
+  individual_price_from?: string | null
+  individual_description?: string | null
+  booking_terms?: string | null
+  cancellation_terms?: string | null
+  highlights?: string[]
   is_active: boolean
   created_at: string
   media?: TourMedia[]
   dates?: TourDate[]
+}
+
+export type TourProgramDay = {
+  id: string
+  tour_id: string
+  day_number: number
+  title: string
+  description?: string | null
+  created_at: string
 }
 
 // Медиа тура
