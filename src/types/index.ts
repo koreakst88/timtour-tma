@@ -30,6 +30,7 @@ export type Tour = {
   created_at: string
   media?: TourMedia[]
   dates?: TourDate[]
+  program?: TourProgramDay[]
 }
 
 export type TourProgramDay = {

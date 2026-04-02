@@ -11,6 +11,7 @@ type Props = {
   tour: Tour & {
     dates?: TourDate[] | null
   }
+  initialComment?: string
 }
 
 type FormErrors = {
@@ -37,11 +38,11 @@ const formatDateLabel = (d: TourDate) => {
   return { label: `${fmt(d.date_start)} — ${fmt(d.date_end)}`, seatsLabel }
 }
 
-export default function BookingForm({ tour }: Props) {
+export default function BookingForm({ tour, initialComment }: Props) {
   useTelegramBackButton()
   const [userName, setUserName] = useState('')
   const [phone, setPhone] = useState('')
-  const [comment, setComment] = useState('')
+  const [comment, setComment] = useState(initialComment ?? '')
   const [peopleCount, setPeopleCount] = useState(1)
   const [travelDate, setTravelDate] = useState('')
   const [selectedDateId, setSelectedDateId] = useState<string | null>(null)
@@ -58,6 +59,12 @@ export default function BookingForm({ tour }: Props) {
       setUserName(name)
     }
   }, [])
+
+  useEffect(() => {
+    if (initialComment) {
+      setComment(initialComment)
+    }
+  }, [initialComment])
 
   const isGroup =
     tour.type === 'group' && Array.isArray(tour.dates) && tour.dates.length > 0

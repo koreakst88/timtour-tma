@@ -5,12 +5,14 @@ import type { Country, Tour, TourDate } from '@/types'
 
 type BookingPageProps = {
   params: Promise<{ tourId: string }>
+  searchParams?: Promise<{ comment?: string }>
 }
 
 export const dynamic = 'force-dynamic'
 
-export default async function BookingPage({ params }: BookingPageProps) {
+export default async function BookingPage({ params, searchParams }: BookingPageProps) {
   const { tourId } = await params
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
 
   const { data: tour } = await supabase
     .from('tours')
@@ -23,7 +25,7 @@ export default async function BookingPage({ params }: BookingPageProps) {
   return (
     <main className="page-transition min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md">
-        <BookingForm tour={tour} />
+        <BookingForm tour={tour} initialComment={resolvedSearchParams?.comment} />
       </div>
     </main>
   )

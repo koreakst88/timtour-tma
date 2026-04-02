@@ -1,19 +1,14 @@
 import { notFound } from 'next/navigation'
 import { TourDetailClient } from '@/components/tours/TourDetailClient'
 import { supabase } from '@/lib/supabase'
-import type { Country, Review, TourDate, TourMedia } from '@/types'
+import type { Country, Review, Tour, TourDate, TourMedia, TourProgramDay } from '@/types'
 
-type TourWithRelations = {
-  id: string
-  title: string
-  description: string
-  price: string
-  type: 'group' | 'individual'
-  duration_days: number
+type TourWithRelations = Tour & {
   country?: Country | null
   media?: TourMedia[] | null
   dates?: TourDate[] | null
   reviews?: Review[] | null
+  program?: TourProgramDay[] | null
 }
 
 type TourPageProps = {
@@ -35,7 +30,8 @@ export default async function TourPage({ params }: TourPageProps) {
         country:countries(*),
         media:tour_media(*),
         dates:tour_dates(*),
-        reviews:reviews(*)
+        reviews:reviews(*),
+        program:tour_program(*)
       `
     )
     .eq('id', id)
@@ -44,11 +40,6 @@ export default async function TourPage({ params }: TourPageProps) {
   if (!tour) notFound()
 
   const fullTour = tour as TourWithRelations
-
-  const photos = [...(fullTour.media ?? [])]
-    .filter((item) => item.type === 'photo')
-    .sort((a, b) => a.order - b.order)
-    .map((item) => item.url)
 
   const dates = [...(fullTour.dates ?? [])].sort(
     (a, b) =>
@@ -72,7 +63,6 @@ export default async function TourPage({ params }: TourPageProps) {
   return (
     <TourDetailClient
       tour={fullTour}
-      photos={photos}
       dates={dates}
       reviews={reviews}
       averageRating={averageRating}
