@@ -92,8 +92,12 @@ export function TourDetailClient({
             {tour.country?.flag_emoji ? `${tour.country.flag_emoji} ` : ''}
             {tour.country?.name ?? 'Направление'}
           </span>
-          <span>•</span>
-          <span>📅 {tour.duration_days} дней</span>
+          {!isIndividualMode ? (
+            <>
+              <span>•</span>
+              <span>📅 {tour.duration_days} дней</span>
+            </>
+          ) : null}
         </div>
 
         <div className="mb-5 mt-5 h-px bg-gray-100" />
@@ -103,7 +107,10 @@ export function TourDetailClient({
           <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">{tour.description}</p>
         </section>
 
-        <TourHighlights highlights={highlights} />
+        <TourHighlights
+          highlights={highlights}
+          title={isIndividualMode ? 'Рекомендуемые места' : 'Что вы увидите'}
+        />
 
         <div className="transition-opacity duration-200">
           {isIndividualMode ? (

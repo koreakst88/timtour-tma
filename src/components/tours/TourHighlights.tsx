@@ -4,9 +4,13 @@ import { useState } from 'react'
 
 type TourHighlightsProps = {
   highlights: string[]
+  title?: string
 }
 
-export default function TourHighlights({ highlights }: TourHighlightsProps) {
+export default function TourHighlights({
+  highlights,
+  title = 'Что вы увидите',
+}: TourHighlightsProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   if (highlights.length === 0) return null
@@ -18,7 +22,7 @@ export default function TourHighlights({ highlights }: TourHighlightsProps) {
         onClick={() => setIsOpen((current) => !current)}
         className="flex w-full items-center justify-between text-left"
       >
-        <span className="text-lg font-extrabold text-[#1F1F1B]">Что вы увидите</span>
+        <span className="text-lg font-extrabold text-[#1F1F1B]">{title}</span>
         <span
           className={`text-sm font-bold text-[#FF6B35] transition-transform ${
             isOpen ? 'rotate-180' : ''
