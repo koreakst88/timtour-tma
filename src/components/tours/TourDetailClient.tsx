@@ -146,7 +146,7 @@ export function TourDetailClient({
         </div>
 
         <div className="space-y-4">
-          {includedItems.length > 0 ? (
+          {!isIndividualMode && includedItems.length > 0 ? (
             <TourTextAccordion title="Что входит в стоимость" items={includedItems} />
           ) : null}
 
