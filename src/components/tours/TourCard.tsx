@@ -3,12 +3,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useEffectEvent, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Clock3 } from 'lucide-react'
 import FavoriteButton from '@/components/tours/FavoriteButton'
 import type { Tour } from '@/types'
 
 export default function TourCard({ tour }: { tour: Tour }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const images = [...(tour.media ?? [])]
     .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
@@ -51,10 +54,15 @@ export default function TourCard({ tour }: { tour: Tour }) {
   }
 
   const badge = getBadge()
+  const currentQuery = searchParams.toString()
+  const returnTo = currentQuery ? `${pathname}?${currentQuery}` : pathname
 
   return (
     <Link
-      href={`/tour/${tour.id}`}
+      href={{
+        pathname: `/tour/${tour.id}`,
+        query: { returnTo },
+      }}
       prefetch={true}
       className="tap-effect relative mb-5 block w-full cursor-pointer overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_40px_rgba(26,20,17,0.08)] ring-1 ring-black/5 transition active:scale-[0.99]"
     >

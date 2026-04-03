@@ -1,7 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import FavoriteButton from '@/components/tours/FavoriteButton'
 import TourAccordion from '@/components/tours/TourAccordion'
 import TourDates from '@/components/tours/TourDates'
@@ -41,7 +42,19 @@ export function TourDetailClient({
   averageRating,
   canReview,
 }: TourDetailClientProps) {
-  useTelegramBackButton()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const returnTo = searchParams.get('returnTo')
+  const handleBack = useCallback(() => {
+    if (returnTo && returnTo.startsWith('/')) {
+      router.push(returnTo)
+      return
+    }
+
+    router.back()
+  }, [returnTo, router])
+
+  useTelegramBackButton(handleBack)
 
   const canSwitchMode = Boolean(tour.has_individual)
   const [mode, setMode] = useState<TourMode>(

@@ -2,16 +2,24 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
 import type { Tour } from '@/types'
 
 export default function WeekendTourCard({ tour }: { tour: Tour }) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const firstImage = [...(tour.media ?? [])]
     .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
     .sort((left, right) => left.order - right.order)[0]?.url
+  const currentQuery = searchParams.toString()
+  const returnTo = currentQuery ? `${pathname}?${currentQuery}` : pathname
 
   return (
     <Link
-      href={`/tour/${tour.id}`}
+      href={{
+        pathname: `/tour/${tour.id}`,
+        query: { returnTo },
+      }}
       className="w-44 flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-white shadow-md transition-transform active:scale-95"
     >
       <div className="relative h-28">
