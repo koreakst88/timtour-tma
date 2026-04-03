@@ -46,15 +46,24 @@ export default function TourAccordion({
             {program
               .slice()
               .sort((left, right) => left.day_number - right.day_number)
-              .map((item) => (
+              .map((item) => {
+                const normalizedTitle = item.title.trim().toLowerCase()
+                const fallbackTitle = `день ${item.day_number}`
+                const shouldShowTitle = normalizedTitle !== fallbackTitle
+
+                return (
                 <div key={item.id} className="rounded-[18px] bg-[#FAFAF8] p-4 ring-1 ring-black/5">
                   <p className="font-bold text-[#1F1F1B]">День {item.day_number}</p>
-                  <p className="mt-2 text-sm font-semibold text-[#1F1F1B]">{item.title}</p>
+                  {shouldShowTitle ? (
+                    <p className="mt-2 text-sm font-semibold text-[#1F1F1B]">{item.title}</p>
+                  ) : null}
                   {item.description ? (
-                    <p className="mt-2 text-sm leading-6 text-[#4F4E49]">{item.description}</p>
+                    <p className={`${shouldShowTitle ? 'mt-2' : 'mt-3'} text-sm leading-6 text-[#4F4E49]`}>
+                      {item.description}
+                    </p>
                   ) : null}
                 </div>
-              ))}
+              )})}
           </div>
         ) : (
           <p className="mt-4 text-sm font-medium text-[#6F6F68]">{emptyText}</p>
