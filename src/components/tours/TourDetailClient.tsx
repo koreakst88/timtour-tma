@@ -145,6 +145,13 @@ export function TourDetailClient({
           </div>
         </div>
 
+        <div className="space-y-4">
+          {includedItems.length > 0 ? (
+            <TourTextAccordion title="Что входит в стоимость" items={includedItems} />
+          ) : null}
+
+        </div>
+
         <TourReviewsSection
           tourId={tour.id}
           tourTitle={tour.title}
@@ -154,10 +161,6 @@ export function TourDetailClient({
         />
 
         <div className="space-y-4">
-          {includedItems.length > 0 ? (
-            <TourTextAccordion title="Что входит в стоимость" items={includedItems} />
-          ) : null}
-
           {tour.booking_terms?.trim() ? (
             <TourTextAccordion title="Условия бронирования" content={tour.booking_terms} />
           ) : null}
