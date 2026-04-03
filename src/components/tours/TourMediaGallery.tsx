@@ -22,8 +22,22 @@ function isYoutubeUrl(url: string) {
 function getYoutubeEmbedUrl(url: string) {
   try {
     const parsed = new URL(url)
-    if (parsed.hostname.includes('youtu.be')) {
-      return `https://www.youtube.com/embed/${parsed.pathname.replace('/', '')}`
+    const hostname = parsed.hostname.replace(/^www\./, '')
+    const pathParts = parsed.pathname.split('/').filter(Boolean)
+
+    if (hostname === 'youtu.be') {
+      const videoId = pathParts[0]
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : url
+    }
+
+    if (hostname === 'youtube.com' || hostname === 'm.youtube.com') {
+      if (pathParts[0] === 'shorts' && pathParts[1]) {
+        return `https://www.youtube.com/embed/${pathParts[1]}`
+      }
+
+      if (pathParts[0] === 'embed' && pathParts[1]) {
+        return `https://www.youtube.com/embed/${pathParts[1]}`
+      }
     }
 
     const videoId = parsed.searchParams.get('v')
