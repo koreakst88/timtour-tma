@@ -23,6 +23,7 @@ export type Tour = {
   has_individual?: boolean
   individual_price_from?: string | null
   individual_description?: string | null
+  included?: string | null
   booking_terms?: string | null
   cancellation_terms?: string | null
   highlights?: string[]

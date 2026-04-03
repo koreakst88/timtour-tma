@@ -211,6 +211,7 @@ export async function createTour(formData: FormData) {
   const hasIndividual = formData.get('has_individual') === 'on'
   const individualPriceFrom = String(formData.get('individual_price_from') ?? '').trim()
   const individualDescription = String(formData.get('individual_description') ?? '').trim()
+  const included = String(formData.get('included') ?? '').trim()
   const bookingTerms = String(formData.get('booking_terms') ?? '').trim()
   const cancellationTerms = String(formData.get('cancellation_terms') ?? '').trim()
   const highlights = parseHighlights(formData)
@@ -233,6 +234,7 @@ export async function createTour(formData: FormData) {
       has_individual: hasIndividual,
       individual_price_from: hasIndividual ? individualPriceFrom || null : null,
       individual_description: hasIndividual ? individualDescription || null : null,
+      included: included || null,
       booking_terms: bookingTerms || null,
       cancellation_terms: cancellationTerms || null,
       highlights,
@@ -266,6 +268,7 @@ export async function updateTour(tourId: string, formData: FormData) {
   const hasIndividual = formData.get('has_individual') === 'on'
   const individualPriceFrom = String(formData.get('individual_price_from') ?? '').trim()
   const individualDescription = String(formData.get('individual_description') ?? '').trim()
+  const included = String(formData.get('included') ?? '').trim()
   const bookingTerms = String(formData.get('booking_terms') ?? '').trim()
   const cancellationTerms = String(formData.get('cancellation_terms') ?? '').trim()
   const highlights = parseHighlights(formData)
@@ -284,6 +287,7 @@ export async function updateTour(tourId: string, formData: FormData) {
       has_individual: hasIndividual,
       individual_price_from: hasIndividual ? individualPriceFrom || null : null,
       individual_description: hasIndividual ? individualDescription || null : null,
+      included: included || null,
       booking_terms: bookingTerms || null,
       cancellation_terms: cancellationTerms || null,
       highlights,

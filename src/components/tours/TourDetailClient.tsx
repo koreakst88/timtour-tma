@@ -50,6 +50,10 @@ export function TourDetailClient({
 
   const isIndividualMode = mode === 'individual'
   const highlights = Array.isArray(tour.highlights) ? tour.highlights.filter(Boolean) : []
+  const includedItems = (tour.included ?? '')
+    .split('\n')
+    .map((item) => item.trim())
+    .filter(Boolean)
   const program = useMemo(
     () => [...(tour.program ?? [])].sort((left, right) => left.day_number - right.day_number),
     [tour.program],
@@ -150,6 +154,10 @@ export function TourDetailClient({
         />
 
         <div className="space-y-4">
+          {includedItems.length > 0 ? (
+            <TourTextAccordion title="Что входит в стоимость" items={includedItems} />
+          ) : null}
+
           {tour.booking_terms?.trim() ? (
             <TourTextAccordion title="Условия бронирования" content={tour.booking_terms} />
           ) : null}

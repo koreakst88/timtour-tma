@@ -224,6 +224,21 @@ export default function TourEditorForm({
       </section>
 
       <section className="space-y-4 rounded-[18px] border border-black/5 bg-white p-4">
+        <div>
+          <h2 className="text-base font-extrabold text-[#1F1F1B]">Что входит в стоимость</h2>
+          <p className="mt-1 text-sm text-[#6F6F68]">Каждая строка станет отдельным пунктом в карточке тура.</p>
+        </div>
+
+        <textarea
+          name="included"
+          defaultValue={initialTour?.included ?? ''}
+          placeholder={'Проживание\nТрансферы\nЭкскурсии'}
+          rows={5}
+          className="w-full rounded-[14px] border border-black/10 bg-white px-4 py-3 text-sm outline-none"
+        />
+      </section>
+
+      <section className="space-y-4 rounded-[18px] border border-black/5 bg-white p-4">
         <div className="flex items-start justify-between gap-3 rounded-[14px] border border-black/8 bg-[#FAFAFA] px-4 py-3">
           <div>
             <h2 className="text-base font-extrabold text-[#1F1F1B]">Индивидуальный тур</h2>
