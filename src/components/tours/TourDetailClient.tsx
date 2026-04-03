@@ -155,14 +155,15 @@ export function TourDetailClient({
             </div>
           ) : null}
 
-          <div className="mb-6">
-            <TourAccordion
-              title={isIndividualMode ? 'Индивидуальная программа' : 'Программа тура'}
-              program={isIndividualMode ? [] : program}
-              content={isIndividualMode ? individualDescription : undefined}
-              emptyText="Программа уточняется"
-            />
-          </div>
+          {!isIndividualMode ? (
+            <div className="mb-6">
+              <TourAccordion
+                title="Программа тура"
+                program={program}
+                emptyText="Программа уточняется"
+              />
+            </div>
+          ) : null}
         </div>
 
         <div className="space-y-4">
@@ -199,12 +200,11 @@ export function TourDetailClient({
             </p>
             {isIndividualMode ? (
               <>
-                <p className="text-sm font-bold leading-tight text-[#1F1F1B]">
-                  Стоимость рассчитывается
-                </p>
                 {tour.individual_price_from ? (
-                  <p className="mt-1 text-xs font-semibold text-[#FF6B35]">{tour.individual_price_from}</p>
-                ) : null}
+                  <p className="text-lg font-bold leading-none text-[#1F1F1B]">{tour.individual_price_from}</p>
+                ) : (
+                  <p className="text-sm font-bold leading-tight text-[#1F1F1B]">По запросу</p>
+                )}
               </>
             ) : (
               <p className="text-lg font-bold leading-none text-[#1F1F1B]">{tour.price}</p>
