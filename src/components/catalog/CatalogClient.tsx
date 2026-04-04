@@ -17,9 +17,9 @@ type CatalogClientProps = {
 }
 
 const tabs: Array<{ id: CatalogTab; label: string }> = [
-  { id: 'weekend', label: '🌸 Корея' },
-  { id: 'international', label: '🌍 За рубеж' },
-  { id: 'english_camp', label: '🎒 English Camp' },
+  { id: 'weekend', label: '🌸 Туры по Корее' },
+  { id: 'international', label: '🌍 Зарубежные туры' },
+  { id: 'english_camp', label: '🎓 Travel & Learn' },
 ]
 
 function getInitialTab(value: string): CatalogTab {

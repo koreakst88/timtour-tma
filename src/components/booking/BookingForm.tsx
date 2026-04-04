@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { createBooking } from '@/app/actions/createBooking'
 import { getTelegramUser } from '@/lib/telegram'
@@ -41,9 +42,11 @@ const formatDateLabel = (d: TourDate) => {
 
 export default function BookingForm({ tour, initialComment, initialMode }: Props) {
   useTelegramBackButton()
+  const searchParams = useSearchParams()
+  const defaultComment = searchParams.get('comment') ?? initialComment ?? ''
   const [userName, setUserName] = useState('')
   const [phone, setPhone] = useState('')
-  const [comment, setComment] = useState(initialComment ?? '')
+  const [comment, setComment] = useState(defaultComment)
   const [peopleCount, setPeopleCount] = useState(1)
   const [travelDate, setTravelDate] = useState('')
   const [selectedDateId, setSelectedDateId] = useState<string | null>(null)
@@ -62,10 +65,11 @@ export default function BookingForm({ tour, initialComment, initialMode }: Props
   }, [])
 
   useEffect(() => {
-    if (initialComment) {
-      setComment(initialComment)
+    const nextComment = searchParams.get('comment') ?? initialComment ?? ''
+    if (nextComment) {
+      setComment(nextComment)
     }
-  }, [initialComment])
+  }, [initialComment, searchParams])
 
   const isIndividualMode = initialMode === 'individual'
   const hasGroupDates =

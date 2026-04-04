@@ -72,12 +72,34 @@ export function TourDetailClient({
     [tour.program],
   )
   const individualDescription = tour.individual_description?.trim() || INDIVIDUAL_FALLBACK
+  const getCtaButton = () => {
+    if (tour.category === 'english_camp') {
+      return {
+        text: 'Отправить ребёнка в лагерь 🎓',
+        comment: 'Интересует программа Travel & Learn',
+      }
+    }
+
+    if (isIndividualMode) {
+      return {
+        text: 'Подобрать тур ✈️',
+        comment: 'Интересует индивидуальный тур',
+      }
+    }
+
+    return {
+      text: 'Забронировать сейчас 🔥',
+      comment: '',
+    }
+  }
+
+  const cta = getCtaButton()
   const bookingParams = new URLSearchParams({
     mode: isIndividualMode ? 'individual' : 'group',
   })
 
-  if (isIndividualMode) {
-    bookingParams.set('comment', 'Интересует индивидуальный тур')
+  if (cta.comment) {
+    bookingParams.set('comment', cta.comment)
   }
 
   const ctaHref = `/booking/${tour.id}?${bookingParams.toString()}`
@@ -222,7 +244,7 @@ export function TourDetailClient({
               type="button"
               className="rounded-2xl bg-[#FF6B35] px-6 py-4 text-base font-bold text-white shadow-lg shadow-[#FF6B35]/30 transition-transform active:scale-95 min-w-[190px]"
             >
-              {isIndividualMode ? 'Узнать стоимость 💬' : 'Забронировать ✈️'}
+              {cta.text}
             </button>
           </Link>
         </div>
