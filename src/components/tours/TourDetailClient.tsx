@@ -72,9 +72,15 @@ export function TourDetailClient({
     [tour.program],
   )
   const individualDescription = tour.individual_description?.trim() || INDIVIDUAL_FALLBACK
-  const ctaHref = isIndividualMode
-    ? `/booking/${tour.id}?comment=${encodeURIComponent('Интересует индивидуальный тур')}`
-    : `/booking/${tour.id}`
+  const bookingParams = new URLSearchParams({
+    mode: isIndividualMode ? 'individual' : 'group',
+  })
+
+  if (isIndividualMode) {
+    bookingParams.set('comment', 'Интересует индивидуальный тур')
+  }
+
+  const ctaHref = `/booking/${tour.id}?${bookingParams.toString()}`
 
   return (
     <div className="min-h-screen bg-white page-transition">

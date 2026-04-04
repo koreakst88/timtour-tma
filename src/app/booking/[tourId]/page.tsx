@@ -5,7 +5,7 @@ import type { Country, Tour, TourDate } from '@/types'
 
 type BookingPageProps = {
   params: Promise<{ tourId: string }>
-  searchParams?: Promise<{ comment?: string }>
+  searchParams?: Promise<{ comment?: string; mode?: string }>
 }
 
 export const dynamic = 'force-dynamic'
@@ -25,7 +25,11 @@ export default async function BookingPage({ params, searchParams }: BookingPageP
   return (
     <main className="page-transition min-h-screen bg-[#FAFAF8] text-[#1F1F1B]">
       <div className="mx-auto w-full max-w-md">
-        <BookingForm tour={tour} initialComment={resolvedSearchParams?.comment} />
+        <BookingForm
+          tour={tour}
+          initialComment={resolvedSearchParams?.comment}
+          initialMode={resolvedSearchParams?.mode}
+        />
       </div>
     </main>
   )

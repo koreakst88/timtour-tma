@@ -12,6 +12,7 @@ type Props = {
     dates?: TourDate[] | null
   }
   initialComment?: string
+  initialMode?: string
 }
 
 type FormErrors = {
@@ -38,7 +39,7 @@ const formatDateLabel = (d: TourDate) => {
   return { label: `${fmt(d.date_start)} — ${fmt(d.date_end)}`, seatsLabel }
 }
 
-export default function BookingForm({ tour, initialComment }: Props) {
+export default function BookingForm({ tour, initialComment, initialMode }: Props) {
   useTelegramBackButton()
   const [userName, setUserName] = useState('')
   const [phone, setPhone] = useState('')
@@ -66,8 +67,10 @@ export default function BookingForm({ tour, initialComment }: Props) {
     }
   }, [initialComment])
 
-  const isGroup =
+  const isIndividualMode = initialMode === 'individual'
+  const hasGroupDates =
     tour.type === 'group' && Array.isArray(tour.dates) && tour.dates.length > 0
+  const isGroup = !isIndividualMode && hasGroupDates
 
   const sortedDates = isGroup
     ? [...(tour.dates as TourDate[])].sort(
@@ -75,7 +78,10 @@ export default function BookingForm({ tour, initialComment }: Props) {
           new Date(a.date_start).getTime() - new Date(b.date_start).getTime(),
       )
     : []
-  const basePrice = parsePrice(tour.price)
+  const priceSource = isIndividualMode
+    ? tour.individual_price_from || tour.price
+    : tour.price
+  const basePrice = parsePrice(priceSource)
   const totalPrice = basePrice * peopleCount
 
   // When user picks a group date, derive travelDate from it
@@ -140,11 +146,12 @@ export default function BookingForm({ tour, initialComment }: Props) {
             {tour.title}
           </p>
           <p className="mt-1 text-sm font-semibold text-[#66655E]">
-            {tour.duration_days} дней ·{' '}
-            {tour.type === 'group' ? 'Групповой' : 'Индивидуальный'}
+            {isIndividualMode
+              ? 'Индивидуальный формат'
+              : `${tour.duration_days} дней · Групповой`}
           </p>
           <p className="mt-2 text-xl font-extrabold text-[#FF6B35]">
-            {tour.price}
+            {isIndividualMode ? (tour.individual_price_from || 'По запросу') : tour.price}
           </p>
         </div>
 
@@ -235,22 +242,40 @@ export default function BookingForm({ tour, initialComment }: Props) {
               </button>
             </div>
             <div className="mt-2 rounded-2xl bg-[#FF6B35]/5 p-4">
-              <div className="mb-1 flex items-center justify-between">
-                <span className="text-sm text-gray-500">
-                  {formatPrice(basePrice)} × {peopleCount} чел.
-                </span>
-                <span className="text-sm text-gray-500">
-                  =
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-base font-bold text-gray-900">
-                  Итого:
-                </span>
-                <span className="text-xl font-black text-[#FF6B35]">
-                  {formatPrice(totalPrice)}
-                </span>
-              </div>
+              {isIndividualMode ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">
+                      {tour.individual_price_from || 'Стоимость по запросу'}
+                    </span>
+                    <span className="text-sm font-bold text-[#FF6B35]">
+                      Индивидуально
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-gray-500">
+                    Финальную стоимость рассчитает менеджер с учётом дат, состава участников и пожеланий.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="text-sm text-gray-500">
+                      {formatPrice(basePrice)} × {peopleCount} чел.
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      =
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-base font-bold text-gray-900">
+                      Итого:
+                    </span>
+                    <span className="text-xl font-black text-[#FF6B35]">
+                      {formatPrice(totalPrice)}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
