@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export function useTelegramBackButton(customBack?: () => void) {
   const router = useRouter()
@@ -16,7 +16,7 @@ export function useTelegramBackButton(customBack?: () => void) {
       if (customBack) {
         customBack()
       } else {
-        router.back()
+        router.push('/client')
       }
     }
 
@@ -28,4 +28,26 @@ export function useTelegramBackButton(customBack?: () => void) {
       tg.BackButton.hide()
     }
   }, [router, customBack])
+}
+
+export function useTourBackNavigation() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  return () => {
+    const from = searchParams.get('from')
+    const tab = searchParams.get('tab')
+    const country = searchParams.get('country')
+
+    if (from === 'catalog') {
+      const params = new URLSearchParams()
+      if (tab) params.set('tab', tab)
+      if (country) params.set('country', country)
+      const query = params.toString()
+      router.push(query ? `/catalog?${query}` : '/catalog')
+      return
+    }
+
+    router.push('/client')
+  }
 }

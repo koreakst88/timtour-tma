@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
+import { useEffect, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import TourCard from '@/components/tours/TourCard'
 import type { Country, Tour } from '@/types'
 
@@ -53,13 +53,48 @@ export default function CatalogClient({
   initialTab,
   initialCountry,
 }: CatalogClientProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<CatalogTab>(getInitialTab(initialTab))
   const [activeCountry, setActiveCountry] = useState<string | null>(
     getInitialTab(initialTab) === 'international' ? initialCountry ?? null : null,
   )
   const [searchQuery, setSearchQuery] = useState('')
+  const cameFromHome = searchParams.get('from') === 'home'
 
-  useTelegramBackButton()
+  useEffect(() => {
+    const params = new URLSearchParams()
+    params.set('tab', activeTab)
+    if (activeTab === 'international' && activeCountry) {
+      params.set('country', activeCountry)
+    }
+    if (cameFromHome) {
+      params.set('from', 'home')
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }, [activeTab, activeCountry, cameFromHome, pathname, router])
+
+  useEffect(() => {
+    const tg = window?.Telegram?.WebApp
+    if (!tg) return
+
+    if (cameFromHome) {
+      tg.BackButton.show()
+      const handleBack = () => router.push('/client')
+      tg.BackButton.onClick(handleBack)
+      return () => {
+        tg.BackButton.offClick(handleBack)
+        tg.BackButton.hide()
+      }
+    }
+
+    tg.BackButton.hide()
+
+    return () => {
+      tg.BackButton.hide()
+    }
+  }, [cameFromHome, router])
 
   const internationalCountries = countries.filter((country) => country.name !== 'Корея')
 

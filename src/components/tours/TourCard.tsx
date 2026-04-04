@@ -62,15 +62,23 @@ export default function TourCard({ tour }: { tour: Tour }) {
       },
     ]
   })()
-  const currentQuery = searchParams.toString()
-  const returnTo = currentQuery ? `${pathname}?${currentQuery}` : pathname
+  const activeTab = searchParams.get('tab') ?? 'international'
+  const activeCountry = searchParams.get('country') ?? ''
+  const isCatalog = pathname === '/catalog' || pathname.startsWith('/client/catalog')
+  const isHome = pathname === '/client' || pathname.startsWith('/client/')
+  const tourUrl = isCatalog
+    ? `/tour/${tour.id}?${new URLSearchParams({
+        from: 'catalog',
+        tab: activeTab,
+        ...(activeCountry ? { country: activeCountry } : {}),
+      }).toString()}`
+    : isHome
+      ? `/tour/${tour.id}?${new URLSearchParams({ from: 'home' }).toString()}`
+      : `/tour/${tour.id}`
 
   return (
     <Link
-      href={{
-        pathname: `/tour/${tour.id}`,
-        query: { returnTo },
-      }}
+      href={tourUrl}
       prefetch={true}
       className="tap-effect relative mb-5 block w-full cursor-pointer overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_40px_rgba(26,20,17,0.08)] ring-1 ring-black/5 transition active:scale-[0.99]"
     >

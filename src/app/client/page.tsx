@@ -99,7 +99,7 @@ async function BannerSection() {
 
           <div className="shrink-0 rounded-[26px] border border-white/16 bg-white/14 p-1.5 backdrop-blur-md">
             <Link
-              href="/catalog?tab=weekend"
+              href="/catalog?tab=weekend&from=home"
               className="inline-flex h-12 items-center justify-center rounded-[20px] bg-white px-5 text-sm font-semibold text-[#8B4A29] shadow-[0_8px_20px_rgba(255,255,255,0.16)] transition hover:bg-[#FFF7F1]"
             >
               Смотреть
@@ -133,7 +133,7 @@ async function WeekendSection() {
     <section className="mt-6">
       <div className="mb-3 flex items-center justify-between px-4">
         <h2 className="text-lg font-black text-gray-900">🌸 Туры выходного дня</h2>
-        <Link href="/catalog?tab=weekend" className="text-sm font-bold text-[#FF6B35]">
+        <Link href="/catalog?tab=weekend&from=home" className="text-sm font-bold text-[#FF6B35]">
           Все →
         </Link>
       </div>
@@ -202,12 +202,13 @@ async function CountriesSection() {
             country.id === 'malaysia'
               ? '/catalog?tab=international&country=malaysia'
               : `/catalog?tab=international&country=${country.id}`
+          const hrefWithSource = `${href}&from=home`
           const coverUrl = country.cover_url || countryCoverFallbacks[country.name]
 
           return (
             <Link
               key={country.id}
-              href={href}
+              href={hrefWithSource}
               prefetch={true}
               className="tap-effect relative aspect-square cursor-pointer overflow-hidden rounded-[20px] shadow-md transition-transform duration-200 active:scale-[0.98]"
             >
@@ -262,7 +263,7 @@ async function EnglishCampSection() {
   return (
     <section className="mx-4 mt-6">
       <Link
-        href="/catalog?tab=english_camp"
+        href="/catalog?tab=english_camp&from=home"
         className="tap-effect relative block h-40 cursor-pointer overflow-hidden rounded-3xl transition-transform active:scale-[0.98]"
       >
         <img
@@ -297,7 +298,7 @@ async function EnglishCampSection() {
 function AllDirectionsButton() {
   return (
     <Link
-      href="/catalog?tab=international"
+      href="/catalog?tab=international&from=home"
       className="mx-4 mt-6 mb-6 inline-flex h-14 w-[calc(100%-2rem)] items-center justify-center rounded-[20px] border border-[#FF6B35] bg-transparent px-5 text-base font-bold text-[#FF6B35] transition hover:bg-[#FF6B35]/5"
     >
       Все направления →

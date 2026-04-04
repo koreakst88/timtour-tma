@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { createBooking } from '@/app/actions/createBooking'
 import { getTelegramUser } from '@/lib/telegram'
@@ -41,8 +41,24 @@ const formatDateLabel = (d: TourDate) => {
 }
 
 export default function BookingForm({ tour, initialComment, initialMode }: Props) {
-  useTelegramBackButton()
+  const router = useRouter()
   const searchParams = useSearchParams()
+  const bookingBack = () => {
+    const params = new URLSearchParams()
+    const mode = searchParams.get('mode') ?? initialMode
+    const from = searchParams.get('from')
+    const tab = searchParams.get('tab')
+    const country = searchParams.get('country')
+
+    if (mode) params.set('mode', mode)
+    if (from) params.set('from', from)
+    if (tab) params.set('tab', tab)
+    if (country) params.set('country', country)
+
+    const query = params.toString()
+    router.push(query ? `/tour/${tour.id}?${query}` : `/tour/${tour.id}`)
+  }
+  useTelegramBackButton(bookingBack)
   const defaultComment = searchParams.get('comment') ?? initialComment ?? ''
   const [userName, setUserName] = useState('')
   const [phone, setPhone] = useState('')

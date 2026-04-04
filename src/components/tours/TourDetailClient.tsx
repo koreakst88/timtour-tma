@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import FavoriteButton from '@/components/tours/FavoriteButton'
 import TourAccordion from '@/components/tours/TourAccordion'
 import TourDates from '@/components/tours/TourDates'
@@ -11,7 +11,7 @@ import TourMediaGallery from '@/components/tours/TourMediaGallery'
 import TourModeSwitcher from '@/components/tours/TourModeSwitcher'
 import TourReviewsSection from '@/components/tours/TourReviewsSection'
 import TourTextAccordion from '@/components/tours/TourTextAccordion'
-import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
+import { useTelegramBackButton, useTourBackNavigation } from '@/hooks/useTelegramBackButton'
 import type { Country, Review, Tour, TourDate, TourMedia, TourProgramDay } from '@/types'
 
 type TourWithRelations = Tour & {
@@ -42,23 +42,20 @@ export function TourDetailClient({
   averageRating,
   canReview,
 }: TourDetailClientProps) {
-  const router = useRouter()
   const searchParams = useSearchParams()
-  const returnTo = searchParams.get('returnTo')
-  const handleBack = useCallback(() => {
-    if (returnTo && returnTo.startsWith('/')) {
-      router.push(returnTo)
-      return
-    }
-
-    router.back()
-  }, [returnTo, router])
-
+  const handleBack = useTourBackNavigation()
   useTelegramBackButton(handleBack)
 
   const canSwitchMode = Boolean(tour.has_individual)
+  const requestedMode = searchParams.get('mode')
   const [mode, setMode] = useState<TourMode>(
-    canSwitchMode ? 'group' : tour.type === 'individual' ? 'individual' : 'group',
+    canSwitchMode
+      ? requestedMode === 'individual'
+        ? 'individual'
+        : 'group'
+      : tour.type === 'individual'
+        ? 'individual'
+        : 'group',
   )
 
   const isIndividualMode = mode === 'individual'
@@ -97,6 +94,13 @@ export function TourDetailClient({
   const bookingParams = new URLSearchParams({
     mode: isIndividualMode ? 'individual' : 'group',
   })
+  const from = searchParams.get('from')
+  const tab = searchParams.get('tab')
+  const country = searchParams.get('country')
+
+  if (from) bookingParams.set('from', from)
+  if (tab) bookingParams.set('tab', tab)
+  if (country) bookingParams.set('country', country)
 
   if (cta.comment) {
     bookingParams.set('comment', cta.comment)
