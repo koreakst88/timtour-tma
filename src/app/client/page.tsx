@@ -5,6 +5,7 @@ import Tabbar from '@/components/layout/Tabbar'
 import { SkeletonCountryCard } from '@/components/shared/SkeletonCard'
 import WeekendTourCard from '@/components/tours/WeekendTourCard'
 import { supabase } from '@/lib/supabase'
+import { getTourMediaUrl } from '@/lib/tour-media'
 import type { Country, Tour } from '@/types'
 
 export const revalidate = 60
@@ -26,7 +27,12 @@ function isKoreaTour(tour: TourWithRelations) {
 
 function isEnglishCampTour(tour: TourWithRelations) {
   const haystack = `${tour.title} ${tour.description ?? ''}`.toLowerCase()
-  return tour.category === 'english_camp' || haystack.includes('english camp')
+  return (
+    tour.category === 'english_camp' ||
+    haystack.includes('english camp') ||
+    haystack.includes('learn & travel') ||
+    haystack.includes('learn and travel')
+  )
 }
 
 async function BannerSection() {
@@ -245,11 +251,11 @@ async function EnglishCampSection() {
     .limit(1)
 
   if (error) {
-    console.error('Failed to load English Camp tours', error)
+    console.error('Failed to load Learn & Travel tours', error)
   }
 
   const fallbackCamp = {
-    title: 'English Camp',
+    title: 'Learn & Travel',
     media: [
       {
         url: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80',
@@ -258,7 +264,7 @@ async function EnglishCampSection() {
   }
 
   const tour = ((data ?? [])[0] as (Tour & { media?: Array<{ url: string }> }) | undefined) ?? fallbackCamp
-  const imageUrl = tour.media?.[0]?.url ?? fallbackCamp.media[0].url
+  const imageUrl = getTourMediaUrl(tour.media?.[0]?.url ?? fallbackCamp.media[0].url)
 
   return (
     <section className="mx-4 mt-6">
@@ -268,7 +274,7 @@ async function EnglishCampSection() {
       >
         <img
           src={imageUrl}
-          alt={tour.title ?? 'English Camp'}
+          alt={tour.title ?? 'Learn & Travel'}
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30" />
@@ -278,7 +284,7 @@ async function EnglishCampSection() {
             Для детей и подростков
           </p>
           <h3 className="mb-2 text-xl font-black leading-tight text-white">
-            🎒 English Camp
+            🎒 Learn & Travel
           </h3>
           <p className="text-xs text-white/70">
             Малайзия · Филиппины · Дубай и др.

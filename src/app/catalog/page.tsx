@@ -22,8 +22,15 @@ function isKoreaTour(tour: TourWithRelations) {
 }
 
 function isEnglishCampTour(tour: TourWithRelations) {
+  if (tour.tour_format === 'education') return true
+
   const haystack = `${tour.title} ${tour.description ?? ''}`.toLowerCase()
-  return haystack.includes('english camp')
+  return (
+    tour.category === 'english_camp' ||
+    haystack.includes('english camp') ||
+    haystack.includes('learn & travel') ||
+    haystack.includes('learn and travel')
+  )
 }
 
 async function getAllTours() {
@@ -62,10 +69,10 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const weekendTours = allTours.filter(isKoreaTour)
 
   const internationalTours = allTours.filter(
-    (tour) => !isKoreaTour(tour) && !isEnglishCampTour(tour),
+    (tour) => !isKoreaTour(tour) && tour.tour_format !== 'education' && !isEnglishCampTour(tour),
   )
 
-  const englishCampTours = allTours.filter(isEnglishCampTour)
+  const englishCampTours = allTours.filter((tour) => tour.tour_format === 'education' || isEnglishCampTour(tour))
 
   return (
     <main className="min-h-screen bg-[#FAFAF8] pb-24 page-transition">

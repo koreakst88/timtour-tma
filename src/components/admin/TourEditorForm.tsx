@@ -135,7 +135,7 @@ export default function TourEditorForm({
           >
             <option value="international">International (Стандарт)</option>
             <option value="weekend">Weekend (Выходные)</option>
-            <option value="english_camp">English Camp (Лагерь)</option>
+            <option value="english_camp">Learn & Travel</option>
           </select>
         </div>
 

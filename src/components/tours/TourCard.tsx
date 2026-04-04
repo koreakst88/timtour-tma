@@ -2,10 +2,11 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Clock3 } from 'lucide-react'
 import FavoriteButton from '@/components/tours/FavoriteButton'
+import { getTourMediaUrl } from '@/lib/tour-media'
 import type { Tour } from '@/types'
 
 export default function TourCard({ tour }: { tour: Tour }) {
@@ -13,10 +14,15 @@ export default function TourCard({ tour }: { tour: Tour }) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const images = [...(tour.media ?? [])]
-    .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
-    .sort((left, right) => left.order - right.order)
-    .map((mediaItem) => mediaItem.url)
+  const images = useMemo(
+    () =>
+      [...(tour.media ?? [])]
+        .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
+        .sort((left, right) => left.order - right.order)
+        .map((mediaItem) => getTourMediaUrl(mediaItem.url))
+        .filter(Boolean),
+    [tour.media],
+  )
 
   const advanceSlide = useEffectEvent(() => {
     setActiveImageIndex((currentIndex) => (currentIndex + 1) % images.length)

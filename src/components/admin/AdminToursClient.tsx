@@ -20,7 +20,7 @@ const categoryBadgeConfig = {
     className: 'bg-sky-50 text-sky-700',
   },
   english_camp: {
-    label: '🎒 English Camp',
+    label: '🎒 Learn & Travel',
     className: 'bg-purple-50 text-purple-700',
   },
 } as const

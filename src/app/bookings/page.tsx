@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { supabase } from '@/lib/supabase'
+import { getTourMediaUrl } from '@/lib/tour-media'
 import type { Booking, Country, Tour, TourMedia } from '@/types'
 
 type BookingWithTour = Booking & {
@@ -97,7 +98,7 @@ export default function BookingsPage() {
                   <div className="relative h-44 w-full overflow-hidden">
                     {firstPhoto?.url ? (
                       <img
-                        src={firstPhoto.url}
+                        src={getTourMediaUrl(firstPhoto.url)}
                         alt={tour?.title ?? 'Тур'}
                         className="h-full w-full object-cover"
                       />

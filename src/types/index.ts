@@ -19,7 +19,9 @@ export type Tour = {
   price: string
   duration_days: number
   type: 'group' | 'individual'
+  tour_format?: 'education' | string | null
   category?: 'weekend' | 'international' | 'english_camp'
+  age_range?: string | null
   has_individual?: boolean
   individual_price_from?: string | null
   individual_description?: string | null
@@ -27,6 +29,10 @@ export type Tour = {
   booking_terms?: string | null
   cancellation_terms?: string | null
   highlights?: string[]
+  parent_benefits?: string[] | string | null
+  program_benefits?: string[] | string | null
+  safety_info?: string[] | string | null
+  support_info?: string[] | string | null
   is_active: boolean
   created_at: string
   media?: TourMedia[]

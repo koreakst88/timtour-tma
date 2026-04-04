@@ -7,6 +7,7 @@ import FavoriteButton from '@/components/tours/FavoriteButton'
 import TourAccordion from '@/components/tours/TourAccordion'
 import TourDates from '@/components/tours/TourDates'
 import TourHighlights from '@/components/tours/TourHighlights'
+import TourInfoListSection from '@/components/tours/TourInfoListSection'
 import TourMediaGallery from '@/components/tours/TourMediaGallery'
 import TourModeSwitcher from '@/components/tours/TourModeSwitcher'
 import TourReviewsSection from '@/components/tours/TourReviewsSection'
@@ -35,6 +36,19 @@ type TourMode = 'group' | 'individual'
 const INDIVIDUAL_FALLBACK =
   'Мы подберём маршрут под ваши даты, бюджет и формат отдыха.'
 
+function normalizeOptionalList(value?: string[] | string | null) {
+  if (!value) return []
+
+  if (Array.isArray(value)) {
+    return value.map((item) => item.trim()).filter(Boolean)
+  }
+
+  return value
+    .split('\n')
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
 export function TourDetailClient({
   tour,
   dates,
@@ -48,6 +62,7 @@ export function TourDetailClient({
 
   const canSwitchMode = Boolean(tour.has_individual)
   const requestedMode = searchParams.get('mode')
+  const isEducationTour = tour.tour_format === 'education' || tour.category === 'english_camp'
   const [mode, setMode] = useState<TourMode>(
     canSwitchMode
       ? requestedMode === 'individual'
@@ -60,6 +75,9 @@ export function TourDetailClient({
 
   const isIndividualMode = mode === 'individual'
   const highlights = Array.isArray(tour.highlights) ? tour.highlights.filter(Boolean) : []
+  const ageRange = tour.age_range?.trim() ?? ''
+  const parentBenefits = normalizeOptionalList(tour.parent_benefits ?? tour.program_benefits)
+  const safetyItems = normalizeOptionalList(tour.safety_info ?? tour.support_info)
   const includedItems = (tour.included ?? '')
     .split('\n')
     .map((item) => item.trim())
@@ -70,10 +88,10 @@ export function TourDetailClient({
   )
   const individualDescription = tour.individual_description?.trim() || INDIVIDUAL_FALLBACK
   const getCtaButton = () => {
-    if (tour.category === 'english_camp') {
+    if (isEducationTour) {
       return {
-        text: 'Отправить ребёнка в лагерь 🎓',
-        comment: 'Интересует программа Travel & Learn',
+        text: 'Оставить заявку',
+        comment: 'Интересует программа Learn & Travel',
       }
     }
 
@@ -122,7 +140,11 @@ export function TourDetailClient({
         {!canSwitchMode ? (
           <div className="mb-3">
             <span className="rounded-full bg-[#FF6B35]/10 px-3 py-1 text-sm font-semibold text-[#FF6B35]">
-              {tour.type === 'group' ? '👥 Групповой' : '🧳 Индивидуальный'}
+              {isEducationTour
+                ? '🎓 Образовательная программа'
+                : tour.type === 'group'
+                  ? '👥 Групповой'
+                  : '🧳 Индивидуальный'}
             </span>
           </div>
         ) : null}
@@ -143,19 +165,65 @@ export function TourDetailClient({
               <span>📅 {tour.duration_days} дней</span>
             </>
           ) : null}
+          {isEducationTour && ageRange ? (
+            <>
+              <span>•</span>
+              <span className="rounded-full bg-[#FFF7ED] px-3 py-1 text-xs font-bold text-[#FF6B35]">
+                Возраст: {ageRange}
+              </span>
+            </>
+          ) : null}
         </div>
 
         <div className="mb-5 mt-5 h-px bg-gray-100" />
 
         <section className="mb-6">
-          <h2 className="mb-2 text-base font-bold text-gray-900">О туре</h2>
+          <h2 className="mb-2 text-base font-bold text-gray-900">
+            {isEducationTour ? 'О программе' : 'О туре'}
+          </h2>
           <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">{tour.description}</p>
         </section>
 
         <TourHighlights
           highlights={highlights}
-          title={isIndividualMode ? 'Рекомендуемые места' : 'Что вы увидите'}
+          title={
+            isEducationTour
+              ? 'Что получит участник'
+              : isIndividualMode
+                ? 'Рекомендуемые места'
+                : 'Что вы увидите'
+          }
         />
+
+        {isEducationTour ? (
+          <div className="mb-6">
+            <TourInfoListSection
+              title="Почему эта программа"
+              items={parentBenefits}
+              emptyText={
+                parentBenefits.length === 0
+                  ? 'Преимущества программы для родителей скоро появятся здесь.'
+                  : undefined
+              }
+              icon="✓"
+            />
+          </div>
+        ) : null}
+
+        {isEducationTour ? (
+          <div className="mb-6">
+            <TourInfoListSection
+              title="Безопасность и сопровождение"
+              items={safetyItems}
+              emptyText={
+                safetyItems.length === 0
+                  ? 'Подробности о сопровождении и мерах безопасности скоро появятся здесь.'
+                  : undefined
+              }
+              icon="🛡️"
+            />
+          </div>
+        ) : null}
 
         <div className="transition-opacity duration-200">
           {isIndividualMode ? (
@@ -174,23 +242,37 @@ export function TourDetailClient({
           ) : (
             <section className="mb-6 rounded-[24px] bg-[#FFF7ED] p-5 ring-1 ring-[#FF6B35]/10">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FF6B35]/70">
-                Групповой формат
+                {isEducationTour ? 'Образовательная программа' : 'Групповой формат'}
               </p>
               <h2 className="mt-2 text-3xl font-black leading-none text-[#FF6B35]">{tour.price}</h2>
-              <p className="mt-2 text-sm text-[#6F6F68]">Фиксированная стоимость за одного человека.</p>
+              <p className="mt-2 text-sm text-[#6F6F68]">
+                {isEducationTour
+                  ? 'Организованная программа для подростков с акцентом на развитие, среду и сопровождение.'
+                  : 'Фиксированная стоимость за одного человека.'}
+              </p>
             </section>
           )}
 
           {!isIndividualMode ? (
             <div className="mb-6">
-              <TourDates dates={dates} />
+              <TourDates
+                dates={dates}
+                title={isEducationTour ? 'Даты программы' : 'Даты тура'}
+                availabilityLabel={isEducationTour ? 'Участников' : 'Мест'}
+                emptyTitle={isEducationTour ? 'Набор в программу уточняется' : 'Ближайший выезд уточняется'}
+                emptyDescription={
+                  isEducationTour
+                    ? 'Точные даты участия и детали набора сообщит менеджер.'
+                    : 'Точные даты и наличие мест сообщит менеджер'
+                }
+              />
             </div>
           ) : null}
 
           {!isIndividualMode ? (
             <div className="mb-6">
               <TourAccordion
-                title="Программа тура"
+                title={isEducationTour ? 'Программа поездки' : 'Программа тура'}
                 program={program}
                 emptyText="Программа уточняется"
               />
@@ -200,7 +282,10 @@ export function TourDetailClient({
 
         <div className="space-y-4">
           {!isIndividualMode && includedItems.length > 0 ? (
-            <TourTextAccordion title="Что входит в стоимость" items={includedItems} />
+            <TourTextAccordion
+              title={isEducationTour ? 'Что входит в программу' : 'Что входит в стоимость'}
+              items={includedItems}
+            />
           ) : null}
 
         </div>
@@ -228,7 +313,11 @@ export function TourDetailClient({
         <div className="mx-auto flex max-w-md items-center justify-between gap-4">
           <div>
             <p className="mb-0.5 text-xs font-medium text-gray-400">
-              {isIndividualMode ? 'Индивидуальный расчёт' : 'Стоимость тура'}
+              {isIndividualMode
+                ? 'Индивидуальный расчёт'
+                : isEducationTour
+                  ? 'Стоимость программы'
+                  : 'Стоимость тура'}
             </p>
             {isIndividualMode ? (
               <>

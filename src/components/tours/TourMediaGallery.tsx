@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { getTourMediaUrl } from '@/lib/tour-media'
 import type { TourMedia } from '@/types'
 
 type GalleryItem = {
@@ -70,7 +71,7 @@ export default function TourMediaGallery({ title, media }: TourMediaGalleryProps
 
     return [...photos, ...videos].map((item) => ({
       id: item.id,
-      url: item.url,
+      url: item.type === 'photo' ? getTourMediaUrl(item.url) : item.url,
       kind: item.type === 'video' ? 'video' : 'photo',
       isYoutube: isYoutubeUrl(item.url),
       embedUrl: item.type === 'video' && isYoutubeUrl(item.url) ? getYoutubeEmbedUrl(item.url) : null,
