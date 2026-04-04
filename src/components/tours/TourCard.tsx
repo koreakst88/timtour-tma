@@ -32,28 +32,36 @@ export default function TourCard({ tour }: { tour: Tour }) {
     return () => window.clearInterval(interval)
   }, [images.length])
 
-  const getBadge = () => {
-    if (tour.category === 'english_camp') {
-      return {
-        text: '🎒 English Camp',
-        className: 'border-white/60 bg-white/88 text-[#7C3AED]',
-      }
+  const formatBadges = (() => {
+    if (tour.has_individual) {
+      return [
+        {
+          text: '👥 Групповой',
+          className: 'border-[#FF6B35]/15 bg-[#FFF4EE] text-[#FF6B35]',
+        },
+        {
+          text: '🧳 Индивидуальный',
+          className: 'border-[#5F6C86]/12 bg-[#F4F6FA] text-[#5F6C86]',
+        },
+      ]
     }
 
-    if (tour.type === 'group') {
-      return {
+    if (tour.type === 'individual') {
+      return [
+        {
+          text: '🧳 Индивидуальный',
+          className: 'border-[#5F6C86]/12 bg-[#F4F6FA] text-[#5F6C86]',
+        },
+      ]
+    }
+
+    return [
+      {
         text: '👥 Групповой',
-        className: 'border-white/60 bg-white/88 text-[#FF6B35]',
-      }
-    }
-
-    return {
-      text: '🧳 Индивидуальный',
-      className: 'border-white/60 bg-white/82 text-[#5F6C86]',
-    }
-  }
-
-  const badge = getBadge()
+        className: 'border-[#FF6B35]/15 bg-[#FFF4EE] text-[#FF6B35]',
+      },
+    ]
+  })()
   const currentQuery = searchParams.toString()
   const returnTo = currentQuery ? `${pathname}?${currentQuery}` : pathname
 
@@ -90,12 +98,6 @@ export default function TourCard({ tour }: { tour: Tour }) {
           <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B35] via-[#FF8A5B] to-[#F4A261]" />
         )}
 
-        <div
-          className={`absolute left-4 top-4 inline-flex h-9 items-center rounded-full border px-3.5 text-xs font-bold shadow-[0_10px_24px_rgba(17,17,17,0.10)] backdrop-blur-md ${badge.className}`}
-        >
-          {badge.text}
-        </div>
-
         <div className="absolute top-3 right-3 z-10">
           <FavoriteButton tourId={tour.id} />
         </div>
@@ -104,9 +106,22 @@ export default function TourCard({ tour }: { tour: Tour }) {
       </div>
 
       <div className="space-y-3.5 p-5">
-        <h2 className="text-[28px] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1F1F1B]">
-          {tour.title}
-        </h2>
+        <div className="flex items-start justify-between gap-3">
+          <h2 className="flex-1 text-[28px] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1F1F1B]">
+            {tour.title}
+          </h2>
+
+          <div className="flex shrink-0 flex-col items-end gap-1.5 pt-1">
+            {formatBadges.map((badge) => (
+              <span
+                key={badge.text}
+                className={`inline-flex min-h-8 items-center rounded-full border px-3 py-1 text-[11px] font-bold leading-none shadow-[0_8px_18px_rgba(18,18,18,0.05)] ${badge.className}`}
+              >
+                {badge.text}
+              </span>
+            ))}
+          </div>
+        </div>
 
         <p className="text-sm font-semibold text-[#6B6A64]">
           {tour.country?.flag_emoji ? `${tour.country.flag_emoji} ` : ''}

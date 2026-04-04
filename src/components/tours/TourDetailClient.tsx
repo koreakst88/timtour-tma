@@ -149,7 +149,7 @@ export function TourDetailClient({
             </section>
           )}
 
-          {!isIndividualMode && dates.length > 0 ? (
+          {!isIndividualMode ? (
             <div className="mb-6">
               <TourDates dates={dates} />
             </div>

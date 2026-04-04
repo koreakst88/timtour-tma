@@ -47,7 +47,12 @@ export default function TourDates({ dates }: TourDatesProps) {
           })}
         </div>
       ) : (
-        <p className="mt-4 text-sm font-medium text-[#6F6F68]">Уточните у менеджера</p>
+        <div className="mt-4 rounded-[18px] border border-dashed border-[#FF6B35]/20 bg-[#FAFAF8] px-4 py-4">
+          <p className="text-sm font-bold text-[#1F1F1B]">Ближайший выезд уточняется</p>
+          <p className="mt-1 text-sm leading-6 text-[#6F6F68]">
+            Точные даты и наличие мест сообщит менеджер
+          </p>
+        </div>
       )}
     </section>
   )
