@@ -13,7 +13,7 @@ import TourModeSwitcher from '@/components/tours/TourModeSwitcher'
 import TourReviewsSection from '@/components/tours/TourReviewsSection'
 import TourTextAccordion from '@/components/tours/TourTextAccordion'
 import { useTelegramBackButton, useTourBackNavigation } from '@/hooks/useTelegramBackButton'
-import { formatPricingOptionPrice, getDisplayTourPrice, getEducationPriceFrom, getEducationPricingOptions } from '@/lib/tour-pricing'
+import { formatPricingOptionPrice, getDisplayPriceLabel, getDisplayTourPrice, getEducationPricingOptions } from '@/lib/tour-pricing'
 import type { Country, Review, Tour, TourDate, TourMedia, TourProgramDay } from '@/types'
 
 type TourWithRelations = Tour & {
@@ -80,7 +80,6 @@ export function TourDetailClient({
   const parentBenefits = normalizeOptionalList(tour.parent_benefits ?? tour.program_benefits)
   const safetyItems = normalizeOptionalList(tour.safety_info ?? tour.support_info)
   const pricingOptions = getEducationPricingOptions(tour)
-  const educationPriceFrom = getEducationPriceFrom(tour)
   const includedItems = (tour.included ?? '')
     .split('\n')
     .map((item) => item.trim())
@@ -238,7 +237,9 @@ export function TourDetailClient({
                 Стоимость рассчитывается индивидуально
               </h2>
               {tour.individual_price_from ? (
-                <p className="mt-2 text-sm font-bold text-[#FF6B35]">{tour.individual_price_from}</p>
+                <p className="mt-2 text-sm font-bold text-[#FF6B35]">
+                  {getDisplayPriceLabel(tour.individual_price_from)}
+                </p>
               ) : null}
               <p className="mt-3 text-sm leading-6 text-[#4F4E49]">{individualDescription}</p>
             </section>
@@ -367,17 +368,15 @@ export function TourDetailClient({
             {isIndividualMode ? (
               <>
                 {tour.individual_price_from ? (
-                  <p className="text-lg font-bold leading-none text-[#1F1F1B]">{tour.individual_price_from}</p>
+                  <p className="text-lg font-bold leading-none text-[#1F1F1B]">
+                    {getDisplayPriceLabel(tour.individual_price_from)}
+                  </p>
                 ) : (
                   <p className="text-sm font-bold leading-tight text-[#1F1F1B]">По запросу</p>
                 )}
               </>
             ) : (
-              <p className="text-lg font-bold leading-none text-[#1F1F1B]">
-                {isEducationTour && educationPriceFrom
-                  ? `от ${formatPricingOptionPrice(educationPriceFrom)}`
-                  : getDisplayTourPrice(tour)}
-              </p>
+              <p className="text-lg font-bold leading-none text-[#1F1F1B]">{getDisplayTourPrice(tour)}</p>
             )}
           </div>
 

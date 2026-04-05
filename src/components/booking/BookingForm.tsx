@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTelegramBackButton } from '@/hooks/useTelegramBackButton'
 import { createBooking } from '@/app/actions/createBooking'
-import { getDisplayTourPrice } from '@/lib/tour-pricing'
+import { getDisplayPriceLabel, getDisplayTourPrice } from '@/lib/tour-pricing'
 import { getTelegramUser } from '@/lib/telegram'
 import type { Tour, TourDate } from '@/types'
 import BookingSuccess from './BookingSuccess'
@@ -100,7 +100,7 @@ export default function BookingForm({ tour, initialComment, initialMode }: Props
       )
     : []
   const priceSource = isIndividualMode
-    ? tour.individual_price_from || tour.price
+    ? getDisplayPriceLabel(tour.individual_price_from || tour.price)
     : getDisplayTourPrice(tour)
   const basePrice = parsePrice(priceSource)
   const totalPrice = basePrice * peopleCount
@@ -172,7 +172,9 @@ export default function BookingForm({ tour, initialComment, initialMode }: Props
               : `${tour.duration_days} дней · Групповой`}
           </p>
           <p className="mt-2 text-xl font-extrabold text-[#FF6B35]">
-            {isIndividualMode ? (tour.individual_price_from || 'По запросу') : getDisplayTourPrice(tour)}
+            {isIndividualMode
+              ? getDisplayPriceLabel(tour.individual_price_from || tour.price)
+              : getDisplayTourPrice(tour)}
           </p>
         </div>
 

@@ -1,5 +1,15 @@
 import type { PricingOption, Tour } from '@/types'
 
+function formatFromPrice(value?: string | null) {
+  const normalizedValue = value?.trim()
+
+  if (!normalizedValue) return 'По запросу'
+  if (/^от\b/i.test(normalizedValue)) return normalizedValue
+  if (/по\s+запросу/i.test(normalizedValue)) return normalizedValue
+
+  return `от ${normalizedValue}`
+}
+
 function normalizePricingOptions(value?: PricingOption[] | string | null) {
   if (!value) return []
 
@@ -46,6 +56,10 @@ export function formatPricingOptionPrice(option: PricingOption) {
   return `${option.price} ${option.currency}`
 }
 
+export function getDisplayPriceLabel(value?: string | null) {
+  return formatFromPrice(value)
+}
+
 export function getEducationPricingOptions(tour: Pick<Tour, 'pricing_options'>) {
   return normalizePricingOptions(tour.pricing_options)
 }
@@ -62,5 +76,5 @@ export function getEducationPriceFrom(tour: Pick<Tour, 'tour_format' | 'pricing_
 
 export function getDisplayTourPrice(tour: Pick<Tour, 'price' | 'tour_format' | 'pricing_options'>) {
   const educationPrice = getEducationPriceFrom(tour)
-  return educationPrice ? `от ${formatPricingOptionPrice(educationPrice)}` : tour.price
+  return educationPrice ? formatFromPrice(formatPricingOptionPrice(educationPrice)) : formatFromPrice(tour.price)
 }
