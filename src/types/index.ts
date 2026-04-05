@@ -29,6 +29,7 @@ export type Tour = {
   booking_terms?: string | null
   cancellation_terms?: string | null
   highlights?: string[]
+  pricing_options?: PricingOption[] | null
   parent_benefits?: string[] | string | null
   program_benefits?: string[] | string | null
   safety_info?: string[] | string | null
@@ -47,6 +48,14 @@ export type TourProgramDay = {
   title: string
   description?: string | null
   created_at: string
+}
+
+export type PricingOption = {
+  title: string
+  occupancy: string
+  label: string
+  price: number
+  currency: string
 }
 
 // Медиа тура

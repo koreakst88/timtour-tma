@@ -13,6 +13,7 @@ import TourModeSwitcher from '@/components/tours/TourModeSwitcher'
 import TourReviewsSection from '@/components/tours/TourReviewsSection'
 import TourTextAccordion from '@/components/tours/TourTextAccordion'
 import { useTelegramBackButton, useTourBackNavigation } from '@/hooks/useTelegramBackButton'
+import { formatPricingOptionPrice, getDisplayTourPrice, getEducationPriceFrom, getEducationPricingOptions } from '@/lib/tour-pricing'
 import type { Country, Review, Tour, TourDate, TourMedia, TourProgramDay } from '@/types'
 
 type TourWithRelations = Tour & {
@@ -78,6 +79,8 @@ export function TourDetailClient({
   const ageRange = tour.age_range?.trim() ?? ''
   const parentBenefits = normalizeOptionalList(tour.parent_benefits ?? tour.program_benefits)
   const safetyItems = normalizeOptionalList(tour.safety_info ?? tour.support_info)
+  const pricingOptions = getEducationPricingOptions(tour)
+  const educationPriceFrom = getEducationPriceFrom(tour)
   const includedItems = (tour.included ?? '')
     .split('\n')
     .map((item) => item.trim())
@@ -240,17 +243,59 @@ export function TourDetailClient({
               <p className="mt-3 text-sm leading-6 text-[#4F4E49]">{individualDescription}</p>
             </section>
           ) : (
-            <section className="mb-6 rounded-[24px] bg-[#FFF7ED] p-5 ring-1 ring-[#FF6B35]/10">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FF6B35]/70">
-                {isEducationTour ? 'Образовательная программа' : 'Групповой формат'}
-              </p>
-              <h2 className="mt-2 text-3xl font-black leading-none text-[#FF6B35]">{tour.price}</h2>
-              <p className="mt-2 text-sm text-[#6F6F68]">
-                {isEducationTour
-                  ? 'Организованная программа для подростков с акцентом на развитие, среду и сопровождение.'
-                  : 'Фиксированная стоимость за одного человека.'}
-              </p>
-            </section>
+            <>
+              {isEducationTour && pricingOptions.length > 0 ? (
+                <section className="mb-6 rounded-[24px] bg-[#FFF7ED] p-5 ring-1 ring-[#FF6B35]/10">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FF6B35]/70">
+                    Образовательная программа
+                  </p>
+                  <h2 className="mt-2 text-2xl font-black leading-tight text-[#1F1F1B]">
+                    Стоимость участия
+                  </h2>
+                  <p className="mt-2 text-sm text-[#6F6F68]">
+                    Выберите подходящий вариант размещения. Для второго и третьего участника в одном
+                    номере действует скидка 20%.
+                  </p>
+
+                  <div className="mt-4 space-y-3">
+                    {pricingOptions.map((option) => (
+                      <div
+                        key={`${option.title}-${option.occupancy}-${option.label}`}
+                        className="rounded-2xl bg-white p-4 shadow-[0_10px_24px_rgba(31,31,27,0.06)] ring-1 ring-[#FF6B35]/10"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-base font-bold text-[#1F1F1B]">{option.title}</p>
+                            <p className="mt-1 text-sm font-medium text-[#6F6F68]">{option.occupancy}</p>
+                            <p className="mt-2 inline-flex rounded-full bg-[#FFF7ED] px-2.5 py-1 text-xs font-bold text-[#FF6B35]">
+                              {option.label}
+                            </p>
+                          </div>
+
+                          <p className="text-lg font-black leading-none text-[#FF6B35]">
+                            {formatPricingOptionPrice(option)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ) : (
+                <section className="mb-6 rounded-[24px] bg-[#FFF7ED] p-5 ring-1 ring-[#FF6B35]/10">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FF6B35]/70">
+                    {isEducationTour ? 'Образовательная программа' : 'Групповой формат'}
+                  </p>
+                  <h2 className="mt-2 text-3xl font-black leading-none text-[#FF6B35]">
+                    {getDisplayTourPrice(tour)}
+                  </h2>
+                  <p className="mt-2 text-sm text-[#6F6F68]">
+                    {isEducationTour
+                      ? 'Организованная программа для подростков с акцентом на развитие, среду и сопровождение.'
+                      : 'Фиксированная стоимость за одного человека.'}
+                  </p>
+                </section>
+              )}
+            </>
           )}
 
           {!isIndividualMode ? (
@@ -328,7 +373,11 @@ export function TourDetailClient({
                 )}
               </>
             ) : (
-              <p className="text-lg font-bold leading-none text-[#1F1F1B]">{tour.price}</p>
+              <p className="text-lg font-bold leading-none text-[#1F1F1B]">
+                {isEducationTour && educationPriceFrom
+                  ? `от ${formatPricingOptionPrice(educationPriceFrom)}`
+                  : getDisplayTourPrice(tour)}
+              </p>
             )}
           </div>
 

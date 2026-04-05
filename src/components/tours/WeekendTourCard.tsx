@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { getDisplayTourPrice } from '@/lib/tour-pricing'
 import type { Tour } from '@/types'
 
 export default function WeekendTourCard({ tour }: { tour: Tour }) {
@@ -35,7 +36,7 @@ export default function WeekendTourCard({ tour }: { tour: Tour }) {
           {tour.title}
         </p>
         <p className="text-xs font-black text-[#FF6B35]">
-          {tour.price}
+          {getDisplayTourPrice(tour)}
         </p>
       </div>
     </Link>

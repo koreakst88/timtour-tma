@@ -7,6 +7,7 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { Clock3 } from 'lucide-react'
 import FavoriteButton from '@/components/tours/FavoriteButton'
 import { getTourMediaUrl } from '@/lib/tour-media'
+import { getDisplayTourPrice } from '@/lib/tour-pricing'
 import type { Tour } from '@/types'
 
 export default function TourCard({ tour }: { tour: Tour }) {
@@ -148,7 +149,9 @@ export default function TourCard({ tour }: { tour: Tour }) {
             <span>{tour.duration_days} дней</span>
           </div>
 
-          <div className="text-right text-[18px] font-extrabold text-[#FF6B35]">{tour.price}</div>
+          <div className="text-right text-[18px] font-extrabold text-[#FF6B35]">
+            {getDisplayTourPrice(tour)}
+          </div>
         </div>
       </div>
     </Link>
