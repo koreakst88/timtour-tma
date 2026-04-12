@@ -80,17 +80,38 @@ function TelegramIcon() {
 
 const socialLinks = [
   { icon: InstagramIcon, label: 'Instagram', url: 'https://instagram.com/timtour22' },
-  { icon: WhatsAppIcon, label: 'WhatsApp', url: 'https://wa.me/0000000000000' },
-  { icon: FacebookIcon, label: 'Facebook', url: 'https://facebook.com' },
+  { icon: WhatsAppIcon, label: 'WhatsApp', url: 'https://wa.me/821084262206' },
+  { icon: FacebookIcon, label: 'Facebook', url: 'https://www.facebook.com/timofeevna.timofeevna' },
   { icon: TikTokIcon, label: 'TikTok', url: 'https://tiktok.com/@timtour22' },
-  { icon: TelegramIcon, label: 'Telegram', url: 'https://t.me/TimTour_WW' },
+  { icon: TelegramIcon, label: 'Telegram', url: 'https://t.me/Timofeevna22' },
 ]
 
-const openExternal = (url: string) => {
-  const telegramApp = window.Telegram?.WebApp
+const openTelegramProfile = (url: string) => {
+  const telegramApp = window.Telegram?.WebApp as
+    | {
+        openTelegramLink?: (link: string) => void
+      }
+    | undefined
 
-  if (telegramApp) {
-    telegramApp.openLink(url)
+  if (telegramApp?.openTelegramLink) {
+    telegramApp.openTelegramLink(url)
+  } else {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+}
+
+const openExternal = (url: string) => {
+  const telegramApp = window.Telegram?.WebApp as
+    | {
+        openLink?: (
+          link: string,
+          options?: { try_browser?: string; try_instant_view?: boolean },
+        ) => void
+      }
+    | undefined
+
+  if (telegramApp?.openLink) {
+    telegramApp.openLink(url, { try_browser: 'external' })
   } else {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
@@ -147,7 +168,7 @@ export default function ProfilePage() {
 
             <button
               type="button"
-              onClick={() => openExternal('tg://resolve?domain=TimTour_WW')}
+              onClick={() => openTelegramProfile('https://t.me/Timofeevna22')}
               className="flex w-full items-center justify-between rounded-[16px] bg-white px-4 py-4 text-sm font-bold shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
             >
               <span>✉️ Написать менеджеру</span>
