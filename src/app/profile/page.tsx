@@ -83,7 +83,7 @@ const socialLinks = [
   { icon: WhatsAppIcon, label: 'WhatsApp', url: 'https://wa.me/821084262206' },
   { icon: FacebookIcon, label: 'Facebook', url: 'https://www.facebook.com/timofeevna.timofeevna' },
   { icon: TikTokIcon, label: 'TikTok', url: 'https://tiktok.com/@timtour22' },
-  { icon: TelegramIcon, label: 'Telegram', url: 'https://t.me/Timofeevna22' },
+  { icon: TelegramIcon, label: 'Telegram', url: 'https://t.me/TimTour_WW' },
 ]
 
 const openTelegramProfile = (url: string) => {
@@ -183,7 +183,11 @@ export default function ProfilePage() {
                 <button
                   key={item.label}
                   type="button"
-                  onClick={() => openExternal(item.url)}
+                  onClick={() =>
+                    item.label === 'Telegram'
+                      ? openTelegramProfile(item.url)
+                      : openExternal(item.url)
+                  }
                   className="flex min-h-24 flex-col items-start justify-between rounded-[12px] bg-white px-4 py-4 text-left shadow-[0_14px_28px_rgba(28,23,18,0.06)]"
                 >
                   <item.icon />
