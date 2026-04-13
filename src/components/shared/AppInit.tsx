@@ -7,27 +7,36 @@ import { ADMIN_TG_COOKIE } from "@/lib/admin-constants";
 
 export default function AppInit() {
   useEffect(() => {
+    const applyTelegramScrollLock = () => {
+      const tg = window?.Telegram?.WebApp
+
+      document.documentElement.style.overscrollBehaviorY = 'none'
+      document.body.style.overscrollBehaviorY = 'none'
+
+      if (!tg) return
+
+      tg.ready()
+      tg.expand()
+
+      // Запрещаем вертикальный свайп, чтобы Telegram
+      // не сворачивал мини-приложение при активном скролле.
+      if (typeof tg.disableVerticalSwipes === 'function') {
+        tg.disableVerticalSwipes()
+      }
+    }
+
     if (typeof window !== 'undefined') {
       window.history.scrollRestoration = 'manual'
+      applyTelegramScrollLock()
     }
 
     const init = async () => {
       if (typeof window === 'undefined') return;
 
-      const tg = window?.Telegram?.WebApp
-      if (tg) {
-        tg.ready()
-        tg.expand()
-        // Запрещаем вертикальный свайп 
-        // чтобы не закрывалось при скролле
-        if (tg.disableVerticalSwipes) {
-          tg.disableVerticalSwipes()
-        }
-      }
-
       try {
         // Инициализация Telegram SDK
         await initTelegram();
+        applyTelegramScrollLock()
 
         const tgUser = getTelegramUser();
         if (tgUser?.id) {
@@ -49,6 +58,15 @@ export default function AppInit() {
     };
 
     init();
+
+    const reapplyLock = () => applyTelegramScrollLock()
+    window.addEventListener('focus', reapplyLock)
+    window.addEventListener('pageshow', reapplyLock)
+
+    return () => {
+      window.removeEventListener('focus', reapplyLock)
+      window.removeEventListener('pageshow', reapplyLock)
+    }
   }, []);
 
   useEffect(() => {
