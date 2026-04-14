@@ -6,6 +6,8 @@ import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Clock3 } from 'lucide-react'
 import FavoriteButton from '@/components/tours/FavoriteButton'
+import { isMiniGroupTour } from '@/lib/tour-badges'
+import { formatTourDuration } from '@/lib/tour-duration'
 import { getTourMediaUrl } from '@/lib/tour-media'
 import { getDisplayTourPrice } from '@/lib/tour-pricing'
 import type { Tour } from '@/types'
@@ -73,6 +75,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
   const activeCountry = searchParams.get('country') ?? ''
   const isCatalog = pathname === '/catalog' || pathname.startsWith('/client/catalog')
   const isHome = pathname === '/client' || pathname.startsWith('/client/')
+  const showMiniGroupBadge = isMiniGroupTour(tour)
   const tourUrl = isCatalog
     ? `/tour/${tour.id}?${new URLSearchParams({
         from: 'catalog',
@@ -103,6 +106,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
                 src={image}
                 alt={tour.title}
                 fill
+                unoptimized={true}
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 loading="lazy"
@@ -122,9 +126,17 @@ export default function TourCard({ tour }: { tour: Tour }) {
 
       <div className="space-y-3.5 p-5">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="flex-1 text-[28px] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1F1F1B]">
-            {tour.title}
-          </h2>
+          <div className="flex-1">
+            {showMiniGroupBadge ? (
+              <span className="mb-2 inline-flex rounded-full border border-[#D8D2C8] bg-[#F6F3EE] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-[#7B746B]">
+                Мини-группа
+              </span>
+            ) : null}
+
+            <h2 className="text-[28px] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1F1F1B]">
+              {tour.title}
+            </h2>
+          </div>
 
           <div className="flex shrink-0 flex-col items-end gap-1.5 pt-1">
             {formatBadges.map((badge) => (
@@ -146,7 +158,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
         <div className="flex items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 text-sm font-semibold text-[#7A7972]">
             <Clock3 className="h-4 w-4 text-[#FF6B35]" />
-            <span>{tour.duration_days} дней</span>
+            <span>{formatTourDuration(tour.duration_days)}</span>
           </div>
 
           <div className="text-right text-[18px] font-extrabold text-[#FF6B35]">
