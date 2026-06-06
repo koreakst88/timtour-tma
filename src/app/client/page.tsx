@@ -14,9 +14,10 @@ type TourWithRelations = Tour & {
   country?: Country | null
 }
 
-const preferredCountryNames = ['Малайзия', 'Вьетнам', 'Филиппины', 'Китай']
+const preferredCountryNames = ['Япония', 'Вьетнам', 'Филиппины', 'Китай']
+const preferredWeekendTourTitles = ['сеул: концептуальный шоппинг']
+const preferredWeekendDestinations = ['пуё', 'чеджу', 'самчок']
 const countryCoverFallbacks: Record<string, string> = {
-  Малайзия: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80',
   Китай: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&q=80',
 }
 
@@ -33,6 +34,23 @@ function isEnglishCampTour(tour: TourWithRelations) {
     haystack.includes('learn & travel') ||
     haystack.includes('learn and travel')
   )
+}
+
+function getWeekendTourPriority(tour: TourWithRelations) {
+  const haystack = `${tour.title} ${tour.description ?? ''} ${tour.country?.name ?? ''}`.toLowerCase()
+  const preferredTitleIndex = preferredWeekendTourTitles.findIndex((title) =>
+    haystack.includes(title),
+  )
+
+  if (preferredTitleIndex !== -1) {
+    return preferredTitleIndex - preferredWeekendTourTitles.length
+  }
+
+  const priorityIndex = preferredWeekendDestinations.findIndex((destination) =>
+    haystack.includes(destination),
+  )
+
+  return priorityIndex === -1 ? Number.MAX_SAFE_INTEGER : priorityIndex
 }
 
 async function BannerSection() {
@@ -131,6 +149,7 @@ async function WeekendSection() {
 
   const weekendTours = ((data ?? []) as TourWithRelations[])
     .filter(isKoreaTour)
+    .sort((left, right) => getWeekendTourPriority(left) - getWeekendTourPriority(right))
     .slice(0, 6)
 
   if (weekendTours.length === 0) return null
@@ -166,23 +185,11 @@ async function CountriesSection() {
 
   const countries = (data ?? []) as Country[]
   const preferredOrder = preferredCountryNames
-  const malaysiaFallback: Country = {
-    id: 'malaysia',
-    name: 'Малайзия',
-    flag_emoji: '🇲🇾',
-    cover_url: countryCoverFallbacks['Малайзия'],
-    is_priority: true,
-    order: 0,
-    is_active: true,
-  }
-
   const preferredCountries = preferredOrder
     .map((name) => {
       const foundCountry = countries.find((country) => country.name === name)
 
       if (foundCountry) return foundCountry
-
-      if (name === 'Малайзия') return malaysiaFallback
 
       return null
     })
@@ -204,10 +211,7 @@ async function CountriesSection() {
 
       <div className="grid grid-cols-2 gap-4">
         {displayCountries.map((country) => {
-          const href =
-            country.id === 'malaysia'
-              ? '/catalog?tab=international&country=malaysia'
-              : `/catalog?tab=international&country=${country.id}`
+          const href = `/catalog?tab=international&country=${country.id}`
           const hrefWithSource = `${href}&from=home`
           const coverUrl = country.cover_url || countryCoverFallbacks[country.name]
 
