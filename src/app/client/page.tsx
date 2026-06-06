@@ -54,70 +54,37 @@ function getWeekendTourPriority(tour: TourWithRelations) {
 }
 
 async function BannerSection() {
-  const { data, error } = await supabase
-    .from('tours')
-    .select('title, country:countries(name), media:tour_media(*)')
-    .eq('is_active', true)
-    .limit(12)
-
-  if (error) {
-    console.error('Failed to load hero banner', error)
-  }
-
-  const tours = ((data ?? []) as Array<
-    Pick<Tour, 'title' | 'media'> & {
-      country?: Array<Pick<Country, 'name'>> | null
-    }
-  >).filter((tour) => (tour.media ?? []).some((mediaItem) => mediaItem.type === 'photo'))
-
-  const preferredDirections = [
-    'таиланд',
-    'фукуок',
-    'филиппин',
-    'боракай',
-    'пхукет',
-    'вьетнам',
-  ]
-
-  const tour =
-    tours.find((item) => {
-      const countryName = item.country?.[0]?.name ?? ''
-      const haystack = `${item.title} ${countryName}`.toLowerCase()
-      return preferredDirections.some((direction) => haystack.includes(direction))
-    }) ??
-    tours[0] ??
-    null
-
-  const heroImage = [...(tour?.media ?? [])]
-    .filter((mediaItem) => mediaItem.type === 'photo' && Boolean(mediaItem.url))
-    .sort((left, right) => left.order - right.order)[0]?.url
+  const heroImage =
+    'https://images.unsplash.com/photo-1760779550145-8a9f5c4255dd?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb&dl=lex-brogan-a6Q277e26v4-unsplash.jpg&w=1200'
 
   return (
     <section className="relative mt-5 overflow-hidden rounded-[30px] bg-[#E7B288] text-white shadow-[0_24px_50px_rgba(166,103,64,0.18)]">
       <div className="absolute inset-0">
-        {heroImage ? (
-          <img
-            src={heroImage}
-            alt={tour?.title ?? 'Весенние туры'}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="h-full w-full bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.35),_transparent_30%),linear-gradient(135deg,_#E29A66,_#F2C49D)]" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#734226]/58 via-[#B96B3E]/26 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/14" />
+        <img
+          src={heroImage}
+          alt="Фудзи и пагода Чурейто"
+          className="h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#22150D]/72 via-[#3B2519]/38 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/38 via-black/10 to-white/10" />
       </div>
 
       <div className="relative flex min-h-[210px] flex-col justify-between p-6">
-        <div className="mt-10 flex items-end justify-between gap-4">
-          <div className="max-w-[13.5rem]">
-            <p className="text-[2rem] font-extrabold leading-[0.95] tracking-[-0.04em]">
-              Весенние
+        <div className="max-w-max rounded-full border border-white/18 bg-white/18 px-3 py-1.5 backdrop-blur-md">
+          <p className="text-[11px] font-semibold tracking-[-0.01em] text-white">
+            🇯🇵 Новое направление
+          </p>
+        </div>
+
+        <div className="flex items-end justify-between gap-4">
+          <div className="max-w-[15rem]">
+            <p className="text-[2rem] font-extrabold leading-[0.95] tracking-[-0.04em] text-white">
+              Откройте Азию
               <br />
-              туры
+              вместе с TimTour
             </p>
-            <p className="mt-3 text-sm font-medium text-white/88">
-              Скидки до 20% на лучшие пляжные и курортные маршруты
+            <p className="mt-3 max-w-[13.75rem] text-[13px] font-medium leading-[1.35] text-white/88">
+              Авторские туры по Корее, Японии, Вьетнаму, Китаю, Филиппинам и Дубаю
             </p>
           </div>
 
@@ -126,7 +93,7 @@ async function BannerSection() {
               href="/catalog?tab=weekend&from=home"
               className="inline-flex h-12 items-center justify-center rounded-[20px] bg-white px-5 text-sm font-semibold text-[#8B4A29] shadow-[0_8px_20px_rgba(255,255,255,0.16)] transition hover:bg-[#FFF7F1]"
             >
-              Смотреть
+              Выбрать тур
               <span className="ml-2 text-base">→</span>
             </Link>
           </div>
